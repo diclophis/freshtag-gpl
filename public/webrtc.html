@@ -4,78 +4,66 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1"/>
     <style>
     </style>
+	  <script src="cookies.js"></script>
 	  <script src="http://static.firebase.com/v0/firebase.js"></script>
   </head>
   <body>
     <script type="text/javascript">
+      
       var localVideo;
       var miniVideo;
       var remoteVideo;
       var localStream;
       var channel;
       var channelReady = false;
-      var pc;
       var socket;
       var initiator = 0;
       var doneSkipping = false;
       var started = false;
       var topicDataRef = null;
-      var senderId = Math.random();
+      var senderId = null;
       var myChildRef = null;
 
       var openFirebaseChannel = function(topic) {
+        topicDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/topics/' + topic);
 
-          topicDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/topics/' + topic);
+        onChannelOpened();
 
-          onChannelOpened();
+        myChildRef = topicDataRef.push();
 
-          myChildRef = topicDataRef.push();
+        topicDataRef.on("child_added", function(snapshot) {
+          var foundChild = snapshot.val();
+          var foundChildRef = snapshot.ref();
+          if (foundChild.senderId != senderId) {
+            //every child thats not myself is a video caller
+            console.log(foundChild, foundChildRef);
+            startCall(foundChildRef);
+          }
+        });
 
-          //value
-          //child_added
-          //child_changed
-          topicDataRef.on("child_added", function(snapshot) {
-            var foundChild = snapshot.val();
-            if (foundChild.senderId != senderId) {
-              //every child thats not myself is a video caller
-            }
-          });
-          topicDataRef.on("child_changed", function(snapshot, prevChildName) {
-            var foundChild = snapshot.val();
-            if (foundChild.senderId != senderId) {
-              //when a child changes that means they are trying to call in
-            }
-          });
+        topicDataRef.on("child_changed", function(snapshot, prevChildName) {
+          var foundChild = snapshot.val();
+          if (foundChild.senderId != senderId) {
+            console.log("something was updated");
+            console.log(foundChild);
+            //when a child changes that means they are trying to call in
+          }
+        });
+
+        myChildRef.set({senderId: senderId});
       };
 
       function initialize() {
-        console.log("Initializing...");
-        localVideo = document.getElementById("localVideo");
-        resetStatus();
-        openFirebaseChannel("wangchung-wangchung");
-        getUserMedia();
-      }
-
-/*
-      function openChannel() {
-        console.log("Opening channel.");
-        var channel = new goog.appengine.Channel('AHRlWrqC1-oO2pDZhcJGSR3WAU0PGbHytx3poFEecmzirWbZFTw0TDnlAl-FWJl_DxtQRi2VLNCHkreZ9ujp773HD-EwnPPlK3TBNXJ2THGleRXRD5YvaGw');
-        var handler = {
-          'onopen': onChannelOpened,
-          'onmessage': onChannelMessage,
-          'onerror': onChannelError,
-          'onclose': onChannelClosed
-        };
-        socket = channel.open(handler);
-      }
-*/
-
-      function resetStatus() {
-        if (!initiator) {
-          setStatus("Waiting for someone to join...");
+        if (foundSenderId = allCookies.getItem("senderId")) {
+          console.log("found-cookie");
+          senderId = foundSenderId;
         } else {
-          setStatus("Initializing...");
+          console.log("create-cookie");
+          senderId = Math.random();
+          allCookies.setItem("senderId");
         }
+        console.log("Initializing...");
+        openFirebaseChannel("wangchung-wangchung");
       }
 
       function getUserMedia() {
@@ -95,7 +83,7 @@
         }
       }
 
-      function createPeerConnection() {
+      function createPeerConnection(peerRef) {
         try {
           pc = new webkitPeerConnection00("STUN stun.l.google.com:19302", onIceCandidate);
           console.log("Created webkitPeerConnnection00 with config \"STUN stun.l.google.com:19302\".");
@@ -109,22 +97,19 @@
         pc.onopen = onSessionOpened;
         pc.onaddstream = onRemoteStreamAdded;
         pc.onremovestream = onRemoteStreamRemoved;
+
+        return pc;
       }
 
-      function maybeStart() {
-      console.log("maybeStart");
-        if (!started && localStream && channelReady) {
-          setStatus("Connecting...");
-          console.log("Creating PeerConnection.");
-          createPeerConnection();
+      function startCall(peerRef) {
+        if (localStream) {
+          var pc = createPeerConnection(peerRef);
           console.log("Adding local stream.");
           pc.addStream(localStream);
-          started = true;
           // Caller initiates offer to peer.
-          if (initiator) {
-            //each child
-            doCall();
-          }
+          doCall(pc, peerRef);
+        } else {
+          console.log("no local stream");
         }
       }
 
@@ -137,11 +122,12 @@
         footer.innerHTML = state;
       }
 
-      function doCall(peerRef) {
+      function doCall(pc, peerRef) {
         console.log("Send offer to peer");
         var offer = pc.createOffer({audio:true, video:true});
         pc.setLocalDescription(pc.SDP_OFFER, offer);
-        sendMessage({type: 'offer', sdp: offer.toSdp()});
+        //sendMessage({type: 'offer', sdp: offer.toSdp()});
+        myChildRef.set({wtf: "wangchung"});
         pc.startIce();
       }
 
@@ -178,12 +164,11 @@
         if (msg.type === 'offer') {
           console.log("offer");
           // Callee creates PeerConnection
-          if (!initiator && !started) {
-            console.log("not caller and not started");
-            maybeStart();
-          }
+          //if (!initiator && !started) {
+          //  console.log("not caller and not started");
+          //  maybeStart();
+          //}
 
-          
           pc.setRemoteDescription(pc.SDP_OFFER, new SessionDescription(msg.sdp));
           //from each peer
           doAnswer();
@@ -226,9 +211,11 @@
       function onUserMediaSuccess(stream) {
         console.log("User has granted access to local media.");
         var url = webkitURL.createObjectURL(stream);
+        localVideo = document.getElementById("localVideo");
         localVideo.style.opacity = 1;
         localVideo.src = url;
         localStream = stream;
+        initialize();
         // Caller creates PeerConnection.
         //if (initiator) {
         //  maybeStart();
@@ -352,10 +339,9 @@
         console.log(doneSkipping);
       }
 
-      setTimeout(initialize, 10);
+      setTimeout(getUserMedia, 10);
     </script>
     <div id="toggle-skipping" onclick="toggleSkipping()">skip done</div>
-    <div id="maybe-start" onclick="maybeStart()">maybe</div>
     <div id="toggle-caller" onclick="toggleInitiator()">toggle</div>
     <div id="local">
       <video width="100%" height="100%" id="localVideo" autoplay="autoplay"/>
