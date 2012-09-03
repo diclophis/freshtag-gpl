@@ -11,7 +11,7 @@
       body > object { display: block; width: 0; height: 0; }
 
       #home { position: absolute: top: 0; left: 0; width: 22%; height: 100%; background-color: rgba(255, 128, 0, 0.2); }
-      #live { opacity: 1.0; -moz-transition: all 1s; position: absolute: top: 0; left: 0; width: 78%; height: 100%; background-color: rgba(255, 128, 32, 0.2); position: absolute; left: 22%; top: 0; }
+      #live { opacity: 0.0; -moz-transition: all 1s; position: absolute: top: 0; left: 0; width: 78%; height: 100%; background-color: rgba(255, 128, 32, 0.2); position: absolute; left: 22%; top: 0; }
       #live.connected { opacity: 1.0; }
       #myself { position: relative; top: 0; width: 100%; height: 30%; background-color: rgba(255, 128, 0, 0.2); }
       #publisher { width: 100%; height: 100%; background-color: rgba(0, 255, 0, 0.2); }
@@ -26,28 +26,25 @@
       #input { width: 100%; height: 5%; padding: 0 0 1em 0; background-color: rgba(0, 32, 64, 0.2); }
       #input textarea { margin: 1em 0 0 1em; padding: 1em 0 0 1em; width: 60%; height: 80%; border: 0px; }
 
-      div.streams-container { width: 100%; height: 66%; position: absolute; top: 0; left: 0; }
+      div.streams-container { width: 100%; height: 57%; position: absolute; top: 0; left: 0; }
       div.stream { float: left; height: 10%; width: 10%; background-color: rgba(0, 32, 64, 0.2); }
+      div.stream div { width: 100%; height: 100%; }
 
-      /*
-      div.stream:hover , object:hover { background-color: grey; -moz-transition: all 1s; -moz-transform: scale3d(1.1, 1.1, 1.1); -webkit-transform: scale3d(1.1, 1.1, 1.1); }
-      */
+      div.live object:hover { background-color: grey; -webkit-transition: all 1s; -moz-transition: all 1s; -moz-transform: scale3d(1.1, 1.1, 1.1); -webkit-transform: scale3d(1.1, 1.1, 1.1); }
 
       #single-stream { }
       #double-stream { }
-      #triple-stream { }
       #quad-stream { }
       #six-stream { }
       #nine-stream { }
       #twelve-stream { }
 
-      #single-stream div.stream { width: 95%; height: 95%; }
-      #double-stream div.stream { width: 45%; height: 95%; }
-      #triple-stream div.stream { width: 31%; height: 95%; }
-      #quad-stream div.stream { width: 45%; height: 45%; }
-      #six-stream div.stream { width: 31%; height: 45%; }
-      #nine-stream div.stream { width: 31%; height: 31%; }
-      #twelve-stream div.stream { width: 24%; height: 31%; }
+      #single-stream div.stream { width: 100%; height: 100%; }
+      #double-stream div.stream { width: 50%; height: 100%; }
+      #quad-stream div.stream { width: 50%; height: 50%; }
+      #six-stream div.stream { width: 33.3%; height: 50%; }
+      #nine-stream div.stream { width: 33.3%; height: 33%; }
+      #twelve-stream div.stream { width: 25%; height: 33%; }
 
       li.item { padding: 0.33em; }
       div.avatar { width: 15%; min-height: 3em; float: left; background-color: rgba(0, 128, 64, 0.2);}
@@ -91,17 +88,12 @@
           return newStreamRepl;
         }
 
-        //addVideoButton.onclick = function(e) {
-        //  createNewStreamDiv();
-        //};
-
         var getSessionToken = function(gotSessionFunc) {
           var req = new XMLHttpRequest();
           req.open("POST", "/session", true);
           req.onreadystatechange = function(e) {
             if (this.readyState == 4) {
               gotSessionFunc(req.responseText);
-              //alert(req.readyState + req.responseText + req.statusText);
             }
           };
           req.send();
@@ -152,7 +144,6 @@
           function sessionConnectedHandler(event) {
             // Subscribe to all streams currently in the Session
             for (var i = 0; i < event.streams.length; i++) {
-              console.log("add-stream 2");
               addStream(event.streams[i]);
             }
             //show('publishLink');
@@ -162,7 +153,6 @@
           function streamCreatedHandler(event) {
             // Subscribe to the newly created streams
             for (var i = 0; i < event.streams.length; i++) {
-              console.log("add-stream");
               addStream(event.streams[i]);
             }
           }
@@ -199,8 +189,14 @@
               return;
             }
             var subscriberDiv = createNewStreamDiv();
-            subscriberDiv.setAttribute('id', stream.streamId);
-            subscribers[stream.streamId] = session.subscribe(stream, subscriberDiv.id, { width: subscriberDiv.offsetWidth, height: subscriberDiv.offsetHeight });
+            var thingy = {
+              stream: stream,
+              div: subscriberDiv
+            };
+            setTimeout(function(ing) {
+              ing.div.setAttribute('id', stream.streamId);
+              subscribers[ing.stream.streamId] = session.subscribe(ing.stream, ing.div.id, {width: ing.div.offsetWidth, height: ing.div.offsetHeight});
+            }, 1000, thingy);
           }
         };
 
