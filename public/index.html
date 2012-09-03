@@ -61,16 +61,13 @@
           if (TB.checkSystemRequirements() != TB.HAS_REQUIREMENTS) {
             alert("You don't have the minimum requirements to run this application." + "Please upgrade to the latest version of Flash.");
           } else {
-            session = TB.initSession(sessionId);  // Initialize session
-
-            // Add event listeners to the session
+            session = TB.initSession(sessionId);
             session.addEventListener('sessionConnected', sessionConnectedHandler);
             session.addEventListener('sessionDisconnected', sessionDisconnectedHandler);
             session.addEventListener('connectionCreated', connectionCreatedHandler);
             session.addEventListener('connectionDestroyed', connectionDestroyedHandler);
             session.addEventListener('streamCreated', streamCreatedHandler);
             session.addEventListener('streamDestroyed', streamDestroyedHandler);
-
             session.connect(apiKey, token);
           }
 
@@ -101,7 +98,6 @@
             for (var i = 0; i < event.streams.length; i++) {
               addStream(event.streams[i]);
             }
-            //show('publishLink');
             startPublishing();
           }
 
@@ -142,13 +138,12 @@
             }
             var subscriberDiv = createNewStreamDiv();
             subscriberDiv.setAttribute('id', stream.streamId);
-            subscribers[stream.streamId] = session.subscribe(stream, subscriberDiv.id); //, {width: ing.div.offsetWidth, height: ing.div.offsetHeight});
+            subscribers[stream.streamId] = session.subscribe(stream, subscriberDiv.id);
           }
         };
 
         var onGetSession = function(e) {
           e.preventDefault();
-          var login = "foo"; //$("#login").val();
           var hash = document.getElementById("freshtag-id").value;
           var namearr = hash.split("#"); // #topic -> ['', topic']
 
@@ -158,12 +153,9 @@
           topicDataRef.on("value", function(snapshot) {
             var foundSession = snapshot.val();
             if (foundSession != null) {
-              // if found use that session id
-              //console.log("using", login, topic, foundSession);
               loadTokBox(foundSession);
             } else {
               getSessionToken(function(newSession) {
-                //console.log("making", login, topic, newSession)
                 topicDataRef.set(newSession);
               });
             }
@@ -312,7 +304,7 @@
       <div id="input">
         <form>
           <textarea></textarea>
-        </form
+        </form>
       </div>
     </div>
 
