@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="http://static.firebase.com/v0/firebase.js"></script>
+    <script src="http://staging.tokbox.com/v0.91/js/TB.min.js" ></script>
+
     <style>
       * { padding: 0; margin: 0; list-style-type: none; }
       body, html {
@@ -9,10 +12,11 @@
         background-color: blue;
         color: white;
       }
+      object { }
       #home { position: absolute: top: 0; left: 0; width: 22%; height: 100%; background-color: rgba(255, 128, 0, 0.2); }
       #live { opacity: 0.0; -moz-transition: all 1s; position: absolute: top: 0; left: 0; width: 78%; height: 100%; background-color: rgba(255, 128, 32, 0.2); position: absolute; left: 22%; top: 0; }
       #live.connected { opacity: 1.0; }
-      #myself { width: 100%; height: 28%; background-color: rgba(255, 128, 0, 0.2); }
+      #myself { width: 100%; height: 60%; background-color: rgba(255, 128, 0, 0.2); }
       #freshtag { height: 6%; background-color: rgba(0, 256, 256, 0.2); }
       #freshtag-id { width: 67%; height: 100%; float: left; border: 0px; font-size: 100%; } 
       #connect { width: 33%; height: 100%; background-color: #efefef; float: left; }
@@ -49,12 +53,11 @@
       div.content { width: 75%; padding: 0.5em; margin: 0 0 0.33em 0; min-height: 3em; float: left; background-color: rgba(256, 128, 256, 0.2);}
       img { max-width: 99%; }
       iframe { max-width: 99%; max-height: 12em; }
-
-
     </style>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        var connectButton = document.getElementById("connect");
+        //var connectButton = document.getElementById("connect");
+        var liveContainer = document.getElementById("live");
         var addVideoButton = document.getElementById("add-video");
         var streamsContainer = document.getElementById("streams").children[0];
         var relayoutStreamsForAdditionalElement = function() {
@@ -64,9 +67,9 @@
             streamsContainer.id = "single-stream";
           } else if (length == 2) {
             streamsContainer.id = "double-stream";
-          } else if (length == 3) {
-            streamsContainer.id = "triple-stream";
-          } else if (length == 4) {
+          //} else if (length == 3) {
+          //  streamsContainer.id = "triple-stream";
+          } else if (length <= 4) {
             streamsContainer.id = "quad-stream";
           } else if (length > 4 && length <= 6) {
             streamsContainer.id = "six-stream";
@@ -88,10 +91,183 @@
         addVideoButton.onclick = function(e) {
           createNewStreamDiv();
         };
-        connectButton.onclick = function() {
-          liveContainer = document.getElementById("live");
-          live.className = "connected";
+    
+      var dynamicToken = null;
+
+      var getSessionToken = function(gotSessionFunc) {
+        var req = new XMLHttpRequest();
+        req.open("POST", "/session", true);
+        req.onreadystatechange = function(e) {
+          if (this.readyState == 4) {
+            gotSessionFunc(req.responseText);
+            //alert(req.readyState + req.responseText + req.statusText);
+          }
         };
+        req.send();
+      };
+
+      var loadTokBox = function(sessionId) {
+        var publisher;
+        var subscribers = {};
+        var apiKey = 15935611; // OpenTok sample code key. Replace with your own API key.
+        var token = 'devtoken'; // Should not be hard-coded.
+        var session = null;
+
+        // Un-comment either of the following to set automatic logging and exception handling.
+        // See the exceptionHandler() method below.
+        // TB.setLogLevel(TB.DEBUG);
+        // TB.addEventListener("exception", exceptionHandler);
+
+        if (TB.checkSystemRequirements() != TB.HAS_REQUIREMENTS) {
+          alert("You don't have the minimum requirements to run this application." + "Please upgrade to the latest version of Flash.");
+        } else {
+          session = TB.initSession(sessionId);  // Initialize session
+
+          // Add event listeners to the session
+          session.addEventListener('sessionConnected', sessionConnectedHandler);
+          session.addEventListener('sessionDisconnected', sessionDisconnectedHandler);
+          session.addEventListener('connectionCreated', connectionCreatedHandler);
+          session.addEventListener('connectionDestroyed', connectionDestroyedHandler);
+          session.addEventListener('streamCreated', streamCreatedHandler);
+          session.addEventListener('streamDestroyed', streamDestroyedHandler);
+
+          session.connect(apiKey, token);
+        }
+
+        // Called when user wants to start publishing to the session
+        function startPublishing() {
+          if (!publisher) {
+            var parentDiv = document.getElementById("myself");
+            var publisherDiv = document.createElement('div'); // Create a div for the publisher to replace
+            publisherDiv.setAttribute('id', 'opentok_publisher');
+            
+            parentDiv.appendChild(publisherDiv);
+            //var parentDiv = createNewStreamDiv
+
+            publisher = session.publish(publisherDiv.id); // Pass the replacement div id to the publish method
+            //show('unpublishLink');
+            //hide('publishLink');
+            liveContainer.className = "connected";
+          }
+        }
+
+        //startPublishing();
+
+        function stopPublishing() {
+          if (publisher) {
+            session.unpublish(publisher);
+          }
+          publisher = null;
+
+          //show('publishLink');
+          //hide('unpublishLink');
+        }
+        
+        //document.getElementById("unpublishLink").onclick = stopPublishing;
+
+    //--------------------------------------
+    // OPENTOK EVENT HANDLERS
+    //--------------------------------------
+
+    function sessionConnectedHandler(event) {
+      // Subscribe to all streams currently in the Session
+      for (var i = 0; i < event.streams.length; i++) {
+        console.log("add-stream 2");
+        addStream(event.streams[i]);
+      }
+      //show('publishLink');
+      startPublishing();
+    }
+
+    function streamCreatedHandler(event) {
+      // Subscribe to the newly created streams
+      for (var i = 0; i < event.streams.length; i++) {
+        console.log("add-stream");
+        addStream(event.streams[i]);
+      }
+    }
+
+    function streamDestroyedHandler(event) {
+      // This signals that a stream was destroyed. Any Subscribers will automatically be removed.
+      // This default behaviour can be prevented using event.preventDefault()
+    }
+
+    function sessionDisconnectedHandler(event) {
+      // This signals that the user was disconnected from the Session. Any subscribers and publishers
+      // will automatically be removed. This default behaviour can be prevented using event.preventDefault()
+      publisher = null;
+
+      //hide('publishLink');
+      //hide('unpublishLink');
+    }
+
+    function connectionDestroyedHandler(event) {
+      // This signals that connections were destroyed
+    }
+
+    function connectionCreatedHandler(event) {
+      // This signals new connections have been created.
+    }
+
+    /*
+    If you un-comment the call to TB.addEventListener("exception", exceptionHandler) above, OpenTok calls the
+    exceptionHandler() method when exception events occur. You can modify this method to further process exception events.
+    If you un-comment the call to TB.setLogLevel(), above, OpenTok automatically displays exception event messages.
+    */
+    function exceptionHandler(event) {
+      alert("Exception: " + event.code + "::" + event.message);
+    }
+
+    //--------------------------------------
+    // HELPER METHODS
+    //--------------------------------------
+
+    function addStream(stream) {
+      // Check if this is the stream that I am publishing, and if so do not publish.
+      if (stream.connection.connectionId == session.connection.connectionId) {
+        return;
+      }
+      //var subscriberDiv = document.createElement('div'); // Create a div for the subscriber to replace
+      var subscriberDiv = createNewStreamDiv();
+      subscriberDiv.setAttribute('id', stream.streamId); // Give the replacement div the id of the stream as its id.
+      //document.getElementById("subscribers").appendChild(subscriberDiv);
+      subscribers[stream.streamId] = session.subscribe(stream, subscriberDiv.id);
+    }
+  };
+
+  var onGetSession = function(e) {
+        e.preventDefault();
+        var login = "foo"; //$("#login").val();
+        var hash = document.getElementById("freshtag-id").value;
+        var namearr = hash.split("#"); // #topic -> ['', topic']
+        var topic = namearr[namearr.length - 1]; // get last element from namearr
+
+        var topicDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/topics/' + topic);
+        // find topic in firebase
+        topicDataRef.on("value", function(snapshot) {
+          var foundSession = snapshot.val();
+          if (foundSession != null) {
+            // if found use that session id
+            console.log("using", login, topic, foundSession);
+            loadTokBox(foundSession);
+          } else {
+            // else getbtoken and add
+            getSessionToken(function(newSession) {
+              // firebase set by login or topic
+              console.log("making", login, topic, newSession)
+              topicDataRef.set(newSession);
+            });
+          }
+        });
+
+        return false;
+      };
+
+      document.getElementById("connect-form").onsubmit = onGetSession;
+
+      //hide('publishLink');
+      //hide('unpublishLink');
+
       });
     </script>
   </head>
@@ -102,9 +278,10 @@
         </div>
       </div>
       <div id="freshtag">
-        <input id="freshtag-id"/>
-        <div id="connect">
-        </div>
+        <form id="connect-form">
+          <input id="freshtag-id" value="#demo2012"/>
+          <input type="submit" id="connect"/>
+        </form>
       </div>
       <div id="trending">
         <ul>
@@ -124,7 +301,9 @@
             </div>
             <div class="content">
               <p>
+<!--
                 <iframe height="100%" src="http://www.youtube.com/embed/MZUsc1ewgUQ" frameborder="0" allowfullscreen></iframe>
+-->
               </p>
             </div>
           </li>
@@ -154,7 +333,9 @@
             </div>
             <div class="content">
               <p>
+<!--
                 <iframe src="http://player.vimeo.com/video/48003887?title=0&amp;byline=0&amp;portrait=0" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+-->
               </p>
             </div>
           </li>
@@ -165,141 +346,6 @@
       <div id="streams">
         <div id="single-stream" class="streams-container">
         </div>
-<!--
-        <div id="single-stream" class="streams-container">
-          <div class="stream">
-          1
-          </div>
-        </div>
-        <div id="double-stream" class="streams-container">
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          2
-          </div>
-        </div>
-        <div id="triple-stream" class="streams-container">
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          2
-          </div>
-          <div class="stream">
-          3
-          </div>
-        </div>
-        <div id="quad-stream" class="streams-container">
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          2
-          </div>
-          <div class="stream">
-          3
-          </div>
-          <div class="stream">
-          4
-          </div>
-        </div>
-        <div id="six-stream" class="streams-container">
-          <div class="stream">
-          666666
-          </div>
-          <div class="stream">
-          666666
-          </div>
-          <div class="stream">
-          666666
-          </div>
-          <div class="stream">
-          666666
-          </div>
-          <div class="stream">
-          666666
-          </div>
-          <div class="stream">
-          666666
-          </div>
-        </div>
-        <div id="nine-stream" class="streams-container">
-          <div class="stream">
-          999999
-          </div>
-          <div class="stream">
-          666666
-          999999
-          </div>
-          <div class="stream">
-          666666
-          999999
-          </div>
-          <div class="stream">
-          666666
-          999999
-          </div>
-          <div class="stream">
-          666666
-          999999
-          </div>
-          <div class="stream">
-          666666
-          999999
-          </div>
-          <div class="stream">
-          666666
-          999999
-          </div>
-          <div class="stream">
-          666666
-          999999
-          </div>
-          <div class="stream">
-          666666
-          999999
-          </div>
-        </div>
-        <div id="twelve-stream" class="streams-container">
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-          <div class="stream">
-          1
-          </div>
-        </div>
--->
       </div>
       <div id="feed">
         <ul>
@@ -329,10 +375,6 @@
             <br/>
             wang chung
             <br/>
-
-<p>
-            <iframe height="100%" src="http://www.youtube.com/embed/MZUsc1ewgUQ" frameborder="0" allowfullscreen></iframe>
-</p>
             <br/>
             wang chung
             <br/>
@@ -355,9 +397,6 @@
             </div>
             <div class="content">
             lol chung
-<p>
-            <iframe height="100%" src="http://www.youtube.com/embed/Ltps17if3t8" frameborder="0" allowfullscreen></iframe>
-</p>
             </div>
           </li>
           <li class="item">
@@ -369,7 +408,9 @@
             <br/>
             wang chung
               <p>
+<!--
                 <iframe src="http://player.vimeo.com/video/45684387?title=0&amp;byline=0&amp;portrait=0" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+-->
               </p>
             </div>
           </li>
