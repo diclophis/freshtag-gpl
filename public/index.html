@@ -12,7 +12,6 @@
         background-color: blue;
         color: white;
       }
-      object { }
       #home { position: absolute: top: 0; left: 0; width: 22%; height: 100%; background-color: rgba(255, 128, 0, 0.2); }
       #live { opacity: 0.0; -moz-transition: all 1s; position: absolute: top: 0; left: 0; width: 78%; height: 100%; background-color: rgba(255, 128, 32, 0.2); position: absolute; left: 22%; top: 0; }
       #live.connected { opacity: 1.0; }
@@ -31,6 +30,23 @@
       div.streams-container { width: 100%; height: 66%; position: absolute; top: 0; left: 0; }
       div.stream { float: left; height: 10%; width: 10%; background-color: rgba(0, 32, 64, 0.2); }
       div.stream:hover { background-color: grey; -moz-transition: all 1s; -moz-transform: scale3d(1.1, 1.1, 1.1); -webkit-transform: scale3d(1.1, 1.1, 1.1); }
+
+      div.stream {
+      display: inline-block; /* shrink to fit */
+      width: 100%; /* whatever width you like */
+      position: relative; /* so .content can use position: absolute */
+      }
+      div.stream::after {
+      padding-top: 56.25%; /* percentage of containing block _width_ */
+      display: block;
+      content: '';
+      }
+      object {
+      position: absolute;
+      top: 0; bottom: 0; right: 0; left: 0; /* follow the parent's edges */
+      outline: thin dashed green; /* just so you can see the box */
+      }
+
 
       #single-stream { }
       #double-stream { }
@@ -231,7 +247,8 @@
       var subscriberDiv = createNewStreamDiv();
       subscriberDiv.setAttribute('id', stream.streamId); // Give the replacement div the id of the stream as its id.
       //document.getElementById("subscribers").appendChild(subscriberDiv);
-      subscribers[stream.streamId] = session.subscribe(stream, subscriberDiv.id);
+      console.log(subscriberDiv.offsetWidth);
+      subscribers[stream.streamId] = session.subscribe(stream, subscriberDiv.id, { width: subscriberDiv.offsetWidth, height: subscriberDiv.offsetHeight });
     }
   };
 
