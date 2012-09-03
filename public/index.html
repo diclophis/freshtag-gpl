@@ -5,21 +5,28 @@
     <script src="http://staging.tokbox.com/v0.91/js/TB.min.js" ></script>
 
     <style>
-
       * { padding: 0; margin: 0; list-style-type: none; }
-      body, html { width: 100%; height: 100%; background-color: blue; color: white; }
+      body, html { width: 100%; height: 100%; }
+      #home { position: absolute: top: 0; left: 0; width: 22%; height: 100%; }
+      #live { visibility: hidden; -webkit-transition: all 1s; -moz-transition: all 1s; width: 78%; height: 100%; position: absolute; left: 22%; top: 0; }
+      #live.connected { visibility: visible; }
+      #myself { height: 25%; width: 100%; }
+
+/*
       body > object { display: block; width: 0; height: 0; }
 
       #home { position: absolute: top: 0; left: 0; width: 22%; height: 100%; background-color: rgba(255, 128, 0, 0.2); }
-      #live { opacity: 0.0; -moz-transition: all 1s; position: absolute: top: 0; left: 0; width: 78%; height: 100%; background-color: rgba(255, 128, 32, 0.2); position: absolute; left: 22%; top: 0; }
-      #live.connected { opacity: 1.0; }
-      #myself { position: relative; top: 0; width: 100%; height: 30%; background-color: rgba(255, 128, 0, 0.2); }
+      #live { visibility: hidden; -webkit-transition: all 1s; -moz-transition: all 1s; position: absolute: top: 0; left: 0; width: 78%; height: 100%; background-color: rgba(255, 128, 32, 0.2); position: absolute; left: 22%; top: 0; }
+      #live.connected { visibility: visible; }
+      #myself { position: relative; top: 0; left: 0; width: 100%; height: 10%; }
+*/
       #publisher { width: 100%; height: 100%; background-color: rgba(0, 255, 0, 0.2); }
+      #publisher div { width: 100%; height: 100%; }
       #freshtag { height: 10%; background-color: rgba(0, 256, 256, 0.2); }
       #connect-form { height: 100%; width: 100%; }
       #freshtag-id { width: 67%; height: 100%; float: left; border: 0px; font-size: 100%; } 
       #connect { border: 0px; width: 33%; height: 100%; background-color: #efefef; float: left; }
-      #status { position: absolute; top: 0; width: 100%; height: 20%; background-color: rgba(255, 32, 32, 0.2); }
+      #status { position: absolute; top: 0; width: 100%; height: 5%; background-color: rgba(255, 32, 32, 0.2); }
       #trending { overflow: auto; width: 100%; height: 60%; background-color: rgba(255, 32, 64, 0.2); }
       #streams { width: 100%; height: 57%; background-color: rgba(255, 32, 64, 0.2); }
       #feed { overflow: auto; width: 100%; height: 33%; background-color: rgba(0, 32, 64, 0.2); }
@@ -29,8 +36,6 @@
       div.streams-container { width: 100%; height: 57%; position: absolute; top: 0; left: 0; }
       div.stream { float: left; height: 10%; width: 10%; background-color: rgba(0, 32, 64, 0.2); }
       div.stream div { width: 100%; height: 100%; }
-
-      div.live object:hover { background-color: grey; -webkit-transition: all 1s; -moz-transition: all 1s; -moz-transform: scale3d(1.1, 1.1, 1.1); -webkit-transform: scale3d(1.1, 1.1, 1.1); }
 
       #single-stream { }
       #double-stream { }
@@ -51,6 +56,7 @@
       div.content { width: 75%; padding: 0.5em; margin: 0 0 0.33em 0; min-height: 3em; float: left; background-color: rgba(256, 128, 256, 0.2);}
       img { max-width: 99%; }
       iframe { max-width: 99%; max-height: 12em; }
+*/
     </style>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
@@ -127,10 +133,17 @@
             if (!publisher) {
               var parentDiv = document.getElementById("myself");
               var publisherDiv = document.createElement('div');
+              var publisherDivDiv = document.createElement('div');
+              publisherDivDiv.id = "publisher-repl";
               publisherDiv.setAttribute('id', 'publisher');
+              publisherDiv.appendChild(publisherDivDiv);
               parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
-              publisher = session.publish(publisherDiv.id, { width: publisherDiv.offsetWidth, height: publisherDiv.offsetHeight }); // Pass the replacement div id to the publish method
-              liveContainer.className = "connected";
+              setTimeout(function(ing) {
+                publisher = session.publish(ing.id, {width: ing.offsetWidth, height: ing.offsetHeight}); // Pass the replacement div id to the publish method
+                setTimeout(function() {
+                  liveContainer.className = "connected";
+                }, 2000);
+              }, 1000, publisherDivDiv);
             }
           }
 
@@ -232,6 +245,7 @@
     <div id="home">
       <div id="myself">
         <div id="status">
+          []
         </div>
       </div>
       <div id="freshtag">
