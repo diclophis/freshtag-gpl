@@ -1,25 +1,6 @@
 body,ul,html { padding: 0; margin: 0; width: 100%; height: 100%; }
       img { max-width: 13.5em; max-height: 13.5em }
       iframe { max-width: 13.5em; max-height: 13.5em; }
-/*
-      #trending, #feed { overflow: auto; }
-
-      #home { top: 0; left: 0; width: 22%; height: 100%; }
-        #myself { top: 0; left: 0; height: 25%; width: 100%; }
-          #status { top: 0; left: 0; width: 100%; height: 15%; background-color: rgba(255, 32, 32, 0.2); }
-          #publisher { width: 100%; height: 100%; }
-          #publisher object { width: 100%; height: 100%; }
-        #freshtag { top: 25%; left: 0; width: 100%; height: 10%; }
-          #connect-form { height: 100%; width: 100%; }
-          #freshtag-id { width: 67%; height: 100%; float: left; border: 0px; font-size: 100%; } 
-          #connect { border: 0px; width: 33%; height: 100%; background-color: #efefef; float: left; }
-        #trending { top: 35%; width: 100%; height: 65%; }
-
-      #live { top: 0; left: 22%; width: 78%; height: 100%; }
-        #streams { top: 0; left: 0; width: 100%; height: 57%; background-color: rgba(255, 32, 64, 0.2); }
-        #feed { top: 57%; left: 0; width: 100%; height: 33%; background-color: rgba(0, 32, 64, 0.2); }
-        #input { top: 90%; left: 0; width: 100%; height: 9%; background-color: rgba(0, 32, 64, 0.2); }
-          #input textarea { width: 60%; height: 100%; border: 0px; }
 
       .streams-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
         .stream { -webkit-transition: all 0.33s; -moz-transition: all 1s; position: relative; float: left; background-color: rgba(32, 32, 32, 0.2); }
@@ -32,12 +13,6 @@ body,ul,html { padding: 0; margin: 0; width: 100%; height: 100%; }
       #nine-stream .stream { width: 33.3%; height: 33%; }
       #twelve-stream .stream { width: 25%; height: 33%; }
 
-      ul { list-style-type: none; }
-      li.item { min-height: 1em; padding: 0.33em; }
-      li.item div { position: relative; margin: 0 0 1em 0; }
-      div.avatar { width: 15%; min-height: 3em; float: left; background-color: rgba(0, 128, 64, 0.2);}
-      div.content { width: 85%; min-height: 3em; float: left; background-color: rgba(256, 128, 256, 0.2);}
-*/
 @font-face{
   font-family:'edmondsans';
   font-weight: bold;
@@ -230,14 +205,16 @@ margin-right: 5px;
 
   bottom: -32px;
 }
+
 .chat_submit_btn, .freshtag_submit_btn{
   font-family: 'edmondsans';
 }
 
-a, a:hover, a:visited{
+a, a:hover, a:visited {
   color:white;
   text-decoration: none;
 }
+
 .trending_head{
   font-family: 'edmondsans';
   font-weight: bold;
