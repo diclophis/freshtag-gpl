@@ -95,11 +95,18 @@ z-index: 1;
   margin: 65px 0px 0px 0px;
 }
 
+/*
 #myself{
 height: 200px;
 width: 100%;
 border-bottom: 1px solid;
 }
+*/
+
+#myself, #publisher, object {
+  width: 100%;
+}
+
 .status{
 height:29px;
 padding-top: 11px;

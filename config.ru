@@ -2,19 +2,30 @@
 
 require "opentok"
 
-class Session
+class TokBoxMiddleware
 
-  def self.get
-    location = "localhost"
-    api_key = "15935611"
-    api_secret = "b644c53e81c3bd02523fa8f8d80825aa1022c2b9"
-    api_url = "https://api.opentok.com/hl"
-    opentok = ::OpenTok::OpenTokSDK.new api_key, api_secret
-    session_id = opentok.create_session location
+  @@location = "http://"
+  @@api_key = "20179871"
+  @@api_secret = "120b9dcb30d979f5dde64625e053186524f4aefa"
+  @@api_url = "https://api.opentok.com/hl"
+
+  def self.session
+    opentok = ::OpenTok::OpenTokSDK.new @@api_key, @@api_secret
+    session_id = opentok.create_session# @@location
+    puts session_id.inspect
     session_id.to_s
   end
 
+  def self.token(env)
+    req = Rack::Request.new(env)
+    session = req.params["session"]
+    opentok = ::OpenTok::OpenTokSDK.new @@api_key, @@api_secret
+    token_id = opentok.generate_token :session_id => session
+    token_id.to_s
+  end
+
 end
+
 
 use Rack::ShowExceptions
 
@@ -38,6 +49,17 @@ builder = Rack::Builder.new do
     run default_resource
   end
 
+  map "/token" do
+    run Proc.new { |env| [
+      200,
+      {
+        'Content-Type' => "text/plain",
+        "Cache-Control" => "public, must-revalidate, max-age=0"
+      },
+      TokBoxMiddleware.token(env)
+    ]}
+  end
+
   map "/session" do
     run Proc.new {[
       200,
@@ -45,7 +67,7 @@ builder = Rack::Builder.new do
         'Content-Type' => "text/plain",
         "Cache-Control" => "public, must-revalidate, max-age=0"
       },
-      Session.get
+      TokBoxMiddleware.session
     ]}
   end
 end

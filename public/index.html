@@ -2,7 +2,7 @@
 <html>
   <head>
     <script src="http://static.firebase.com/v0/firebase.js"></script>
-    <script src="http://staging.tokbox.com/v0.91/js/TB.min.js" ></script>
+    <script src="http://static.opentok.com/v0.91/js/TB.min.js"></script>
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/960.css">
     <script>
@@ -40,7 +40,7 @@
           return newStreamRepl;
         }
 
-        var getSessionToken = function(gotSessionFunc) {
+        var getSession = function(gotSessionFunc) {
           var req = new XMLHttpRequest();
           req.open("POST", "/session", true);
           req.onreadystatechange = function(e) {
@@ -51,16 +51,27 @@
           req.send();
         };
 
-        var loadTokBox = function(sessionId) {
+        var getToken = function(session, gotTokenFunc) {
+          var req = new XMLHttpRequest();
+          req.open("POST", "/token/?session=" + session, true);
+          req.onreadystatechange = function(e) {
+            if (this.readyState == 4) {
+              gotTokenFunc(req.responseText);
+            }
+          };
+          req.send();
+        };
+
+        var loadTokBox = function(sessionId, token) {
           var publisher;
           var subscribers = {};
-          var apiKey = 15935611;
-          var token = 'devtoken';
+          var apiKey = 20179871;
           var session = null;
 
           if (TB.checkSystemRequirements() != TB.HAS_REQUIREMENTS) {
             alert("You don't have the minimum requirements to run this application." + "Please upgrade to the latest version of Flash.");
           } else {
+            TB.addEventListener("exception", exceptionHandler);
             session = TB.initSession(sessionId);
             session.addEventListener('sessionConnected', sessionConnectedHandler);
             session.addEventListener('sessionDisconnected', sessionDisconnectedHandler);
@@ -69,6 +80,7 @@
             session.addEventListener('streamCreated', streamCreatedHandler);
             session.addEventListener('streamDestroyed', streamDestroyedHandler);
             session.connect(apiKey, token);
+            console.log("wtf");
           }
 
           // Called when user wants to start publishing to the session
@@ -82,6 +94,7 @@
               publisherDiv.appendChild(publisherDivDiv);
               parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
               publisher = session.publish(publisherDivDiv.id);
+              //publisher = session.publish(parentDiv.id);
               //liveContainer.className = "connected";
             }
           }
@@ -117,14 +130,17 @@
             // This signals that the user was disconnected from the Session. Any subscribers and publishers
             // will automatically be removed. This default behaviour can be prevented using event.preventDefault()
             publisher = null;
+            console.log("sessionDisconnectedHandler");
           }
 
           function connectionDestroyedHandler(event) {
             // This signals that connections were destroyed
+            console.log("connectionDestroyedHandler");
           }
 
           function connectionCreatedHandler(event) {
             // This signals new connections have been created.
+            console.log("connectionCreatedHandler");
           }
 
           function exceptionHandler(event) {
@@ -153,9 +169,11 @@
           topicDataRef.on("value", function(snapshot) {
             var foundSession = snapshot.val();
             if (foundSession != null) {
-              loadTokBox(foundSession);
+              getToken(foundSession, function(tokenFromRuby) {
+                loadTokBox(foundSession, tokenFromRuby);
+              });
             } else {
-              getSessionToken(function(newSession) {
+              getSession(function(newSession) {
                 topicDataRef.set(newSession);
               });
             }
@@ -180,13 +198,7 @@
         </div>
       </div>
       <div class="grid_4 left_col">
-        <div id="myself">
-          <div class="nickname_wrapper">
-            <div class="nickname">
-              nickname
-            </div>
-          </div>
-        </div>
+        <div id="myself"></div>
         <div class="status">
           <div class="status_report">STATUS: <span class="green" id="status">ON</span></div>
           <div class="role">ROLE: <span class="green" id="role">ADMIN</span></div>
