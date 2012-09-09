@@ -1,33 +1,47 @@
-body,ul,html { padding: 0; margin: 0; width: 100%; height: 100%; }
-      img { max-width: 13.5em; max-height: 13.5em }
-      iframe { max-width: 13.5em; max-height: 13.5em; }
-
-      .streams-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
-        .stream { -webkit-transition: all 0.33s; -moz-transition: all 1s; position: relative; float: left; background-color: rgba(32, 32, 32, 0.2); }
-          .stream object { position: relative; width: 100%; height: 100%; }
-
-      #single-stream .stream { width: 100%; height: 100%; }
-      #double-stream .stream { width: 50%; height: 100%; }
-      #quad-stream .stream { width: 50%; height: 50%; }
-      #six-stream .stream { width: 33.3%; height: 50%; }
-      #nine-stream .stream { width: 33.3%; height: 33%; }
-      #twelve-stream .stream { width: 25%; height: 33%; }
-
 @font-face{
   font-family:'edmondsans';
   font-weight: bold;
   src:url('Edmondsans-Bold.otf');
 }
+
 @font-face{
   font-family:'edmondsans';
   font-weight: 400;
   src:url('Edmondsans-Medium.otf');
 }
+
 @font-face{
   font-family:'edmondsans';
   font-weight: normal;
   src:url('Edmondsans-Regular.otf');
 }
+
+body,ul,html { padding: 0; margin: 0; width: 100%; height: 100%; }
+img { max-width: 13.5em; max-height: 13.5em }
+iframe { max-width: 13.5em; max-height: 13.5em; }
+body {
+  background: url('../images/climpek2x.png') top left;
+  font-family: sans-serif;
+}
+body > object {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+a, a:hover, a:visited {
+  color:white;
+  text-decoration: none;
+}
+
+.streams-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+.streams-container > object { -webkit-transition: all 0.17s; -moz-transition: all 0.17s; position: relative; float: left; background-color: rgba(32, 32, 32, 0.2); }
+
+#single-stream object { width: 100%; height: 100%; }
+#double-stream object { width: 50%; height: 100%; }
+#quad-stream object { width: 50%; height: 50%; }
+#six-stream object { width: 33.3%; height: 50%; }
+#nine-stream object { width: 33.3%; height: 33%; }
+#twelve-stream object { width: 25%; height: 33%; }
 
 .logo{
   font-family: 'edmondsans';
@@ -37,42 +51,38 @@ body,ul,html { padding: 0; margin: 0; width: 100%; height: 100%; }
   font-size: 27px;
 }
 
-.inset{text-shadow:0 1px 0 #fff}
+.inset { text-shadow: 0 1px 0 #fff; }
 
-body{
-  background: url('../images/climpek2x.png')top left;
-  font-family: sans-serif;
-}
 
-.stats{
+.stats {
   float: right !important;
-text-align: right;
-margin-left: 20px !important;
-margin-right: 0px !important;
-padding-top: 10px;
+  text-align: right;
+  margin-left: 20px !important;
+  margin-right: 0px !important;
+  padding-top: 10px;
 
   font-size: 14px;
-font-family: 'edmondsans';
-
+  font-family: 'edmondsans';
 }
 
-.green{
+.green {
   color: green;
 }
-.freshtag{
+
+.freshtag {
   margin-right:40px;
   display: inline-block; 
 }
+
 .top_bar_bg{
   height: 45px;
-width: 100%;
-position: fixed;
-
+  width: 100%;
+  position: fixed;
   background: rgba(0, 0, 0, .9);
-z-index: 1;
+  z-index: 1;
 }
 
-.top_bar{
+.top_bar {
   height: 40px;
   position: fixed;
   color: white;
@@ -80,129 +90,118 @@ z-index: 1;
   padding-top: 5px;
 }
 
-.cont{
-
+.cont {
   min-height:600px;
   height: 100%;
 }
-.left_col{
+
+.left_col {
   background: rgba(0,0,0,.7);
   min-height: 540px;
-
   -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
-        
-        box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
+  box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
   margin: 65px 0px 0px 0px;
 }
 
-/*
-#myself{
-height: 200px;
-width: 100%;
-border-bottom: 1px solid;
-}
-*/
-
-object {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
 
 #publisher object {
   width: 100%;
   position: relative;
 }
 
-.status{
-height:29px;
-padding-top: 11px;
-color: white;
-font-family: 'edmondsans';
-font-weight: bold;
-width:100%
+.status {
+  height:29px;
+  padding-top: 11px;
+  color: white;
+  font-family: 'edmondsans';
+  font-weight: bold;
+  width:100%
 }
 
-.others{
- background: rgba(0,0,0,.7);
- height:350px;
- margin-top: 65px;
- -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
-        
-        box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
+.others {
+   background: rgba(0,0,0,.7);
+   height:350px;
+   margin-top: 65px;
+   -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
+   box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
 }
-.chat{
+
+.chat {
  height:175px;
  margin-top: 10px;
- 
 }
-.chat_feed{
+
+.chat_feed {
   height: 145px;
   background: rgba(255,255,255,.7);
   -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
-        
-        box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
+  box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
   margin-bottom: 5px;
   overflow-y: scroll;
 }
-.chat_input_box{
+
+.chat_input_box {
   height:30px;    
 }
-.chat_input{
-  height: 24px;
 
+.chat_input {
+  height: 24px;
   width: 75%;
-float: left;
-position: relative;
-left:-1px;
+  float: left;
+  position: relative;
+  left:-1px;
   padding-left: 17px;  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, .4);
 }
-.chat_submit{
+
+.chat_submit {
   height: 24px;
-width: 20%;
-float: right;
-}
-.chat_submit_btn {
-width: 102%;
-height: 30px;
+  width: 20%;
+  float: right;
 }
 
-ul.posted_msgs li{
+.chat_submit_btn {
+  width: 102%;
+  height: 30px;
+}
+
+ul.posted_msgs li {
   margin-bottom: 3px;
   border-bottom: solid 1px #444;
 }
-.post{
+
+.post {
   padding: 10px 20px 10px 20px;
 }
 
-.freshtag_input{
+.freshtag_input {
   float: left;
-
   width: 204px;
-height: 24px;
-
+  height: 24px;
   padding-left: 7px;
 }
-.freshtag_submit_btn{
+
+.freshtag_submit_btn {
   width: 85px;
-height: 31px;
+  height: 31px;
 }
 
-.status_report{
+.status_report {
   text-align: left !important;
-float: left;
-margin-left: 5px;
+  float: left;
+  margin-left: 5px;
 }
-.role{
+
+.role {
   text-align: right !important;
-margin-right: 5px;
+  margin-right: 5px;
 }
  
-.nickname_wrapper{
+.nickname_wrapper {
   position:relative;
   top: 170px;
 }
-.nickname{
+
+.nickname {
   position: absolute;
   height: 26px;
   background-color: rgba(0,0,0,.4);
@@ -213,10 +212,10 @@ margin-right: 5px;
   padding-left: 7px;
   font-size: 14px;
 }
-.description{
+
+.description {
   padding: 7px;
   position: relative;
-
   bottom: -32px;
 }
 
@@ -224,12 +223,7 @@ margin-right: 5px;
   font-family: 'edmondsans';
 }
 
-a, a:hover, a:visited {
-  color:white;
-  text-decoration: none;
-}
-
-.trending_head{
+.trending_head {
   font-family: 'edmondsans';
   font-weight: bold;
   padding: 12px 0px 0px 5px;

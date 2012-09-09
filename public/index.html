@@ -32,11 +32,11 @@
         var createNewStreamDiv = function() {
           var length = (streamsContainer.children.length) + 1;
           relayoutStreamsForElementCount(length);
-          var newStreamDiv = document.createElement('div');
-          newStreamDiv.className = "stream";
-          streamsContainer.appendChild(newStreamDiv);
+          //var newStreamDiv = document.createElement('div');
+          //newStreamDiv.className = "stream";
+          //streamsContainer.appendChild(newStreamDiv);
           var newStreamRepl = document.createElement('div');
-          newStreamDiv.appendChild(newStreamRepl);
+          streamsContainer.appendChild(newStreamRepl);
           return newStreamRepl;
         }
 
