@@ -10,6 +10,11 @@
         var dynamicToken = null;
         var liveContainer = document.getElementById("live");
         var streamsContainer = document.getElementById("streams").children[0];
+        var chatInput = document.getElementById("chat-input");
+        var chatButton = document.getElementById("chat-button");
+        var sessionDataRef = null;
+        var chatDataRef = null;
+        var messagesList = document.getElementById("posted_msgs");
 
         var relayoutStreamsForElementCount = function(length) {
           if (length == 1) {
@@ -160,6 +165,32 @@
           }
         };
 
+        function htmlEntities(str) {
+          return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        var createMessageLi = function(body) {
+
+          var li = document.createElement("li");
+
+          var postDiv = document.createElement("div");
+          postDiv.className = "post";
+
+          var nameSpan = document.createElement("span");
+          nameSpan.className = "name";
+
+          var msgSpan = document.createElement("span");
+          msgSpan.className = "msg"; 
+
+          msgSpan.innerHTML = htmlEntities(body);
+
+          postDiv.appendChild(nameSpan);
+          postDiv.appendChild(msgSpan);
+          li.appendChild(postDiv);
+
+          return li;
+        };
+
         var onGetSession = function(e) {
           e.preventDefault();
           var hash = document.getElementById("freshtag-id").value;
@@ -167,8 +198,9 @@
 
           var topic = namearr[namearr.length - 1]; // get last element from namearr
           document.getElementById("freshtag").innerHTML = topic;
-          var topicDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/topics/' + topic);
-          topicDataRef.on("value", function(snapshot) {
+          sessionDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/session/' + topic);
+          chatDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/chat/' + topic);
+          sessionDataRef.on("value", function(snapshot) {
             var foundSession = snapshot.val();
             if (foundSession != null) {
               getToken(foundSession, function(tokenFromRuby) {
@@ -176,15 +208,33 @@
               });
             } else {
               getSession(function(newSession) {
-                topicDataRef.set(newSession);
+                sessionDataRef.set(newSession);
               });
             }
+          });
+
+          chatDataRef.on('child_added', function(snapshot) {
+            //We'll fill this in later.
+            console.log(snapshot.val());
+            var body = snapshot.val();
+            var newMessageLi = createMessageLi(body);
+            messagesList.appendChild(newMessageLi);
           });
 
           return false;
         };
 
+        var onClickChat = function(e) {
+          e.preventDefault();
+
+          if (chatDataRef != null) {
+            chatDataRef.push(chatInput.value);
+          }
+          return false;
+        }
+
         document.getElementById("connect-form").onclick = onGetSession;
+        chatButton.onclick = onClickChat;
       });
     </script>
   </head>
@@ -225,47 +275,12 @@
       </div>
       <div class="grid_8 chat">
         <div class="chat_feed">
-
-          <ul class="posted_msgs">
-            <li>
-              <div class="post">
-              <span class="name"><strong>FreshNess</strong> :</span>
-              <span class="msg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce est tellus, cursus quis molestie feugiat, tempus in tellus. Nam et felis sit amet purus sodales tempus sit amet ac lectus.</span>
-              </div>
-            </li>
-
-            <li>
-              <div class="post">
-              <span class="name"><strong>FreshNess2</strong> :</span>
-              <span class="msg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce est tellus, cursus quis molestie feugiat, tempus in tellus. Nam et felis sit amet purus sodales tempus sit amet ac lectus.</span>
-              </div>
-            </li>
-
-            <li>
-              <div class="post">
-              <span class="name"><strong>FreshNess3</strong> :</span>
-              <span class="msg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce est tellus, cursus quis molestie feugiat, tempus in tellus. Nam et felis sit amet purus sodales tempus sit amet ac lectus.</span>
-              </div>
-            </li>
-
-            <li>
-              <div class="post">
-              <span class="name"><strong>FreshNess4</strong> :</span>
-              <span class="msg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce est tellus, cursus quis molestie feugiat, tempus in tellus. Nam et felis sit amet purus sodales tempus sit amet ac lectus.</span>
-              </div>
-            </li>
-
-            <li>
-              <div class="post">
-              <span class="name"><strong>FreshNess5</strong> :</span>
-              <span class="msg">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce est tellus, cursus quis molestie feugiat, tempus in tellus. Nam et felis sit amet purus sodales tempus sit amet ac lectus.</span>
-              </div>
-            </li>
+          <ul id="posted_msgs">
           </ul>
         </div>
         <div class="chat_input_box">
-          <input placeholder="chat message" class="chat_input">
-        <div class="chat_submit"><input type="button" value="SEND" class="chat_submit_btn"></div>
+          <input placeholder="chat message" class="chat_input" id="chat-input"/>
+          <div class="chat_submit"><input id="chat-button" type="button" value="SEND" class="chat_submit_btn"/></div>
         </div>
       </div>
     </div>
