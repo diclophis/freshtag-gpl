@@ -11,8 +11,7 @@
         var liveContainer = document.getElementById("live");
         var streamsContainer = document.getElementById("streams").children[0];
 
-        var relayoutStreamsForAdditionalElement = function() {
-          var length = (streamsContainer.children.length) + 1;
+        var relayoutStreamsForElementCount = function(length) {
           if (length == 1) {
             streamsContainer.id = "single-stream";
           } else if (length == 2) {
@@ -31,7 +30,8 @@
         };
 
         var createNewStreamDiv = function() {
-          relayoutStreamsForAdditionalElement();
+          var length = (streamsContainer.children.length) + 1;
+          relayoutStreamsForElementCount(length);
           var newStreamDiv = document.createElement('div');
           newStreamDiv.className = "stream";
           streamsContainer.appendChild(newStreamDiv);
@@ -124,6 +124,8 @@
           function streamDestroyedHandler(event) {
             // This signals that a stream was destroyed. Any Subscribers will automatically be removed.
             // This default behaviour can be prevented using event.preventDefault()
+            var length = (streamsContainer.children.length) - 1;
+            relayoutStreamsForElementCount(length);
           }
 
           function sessionDisconnectedHandler(event) {

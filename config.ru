@@ -4,14 +4,15 @@ require "opentok"
 
 class TokBoxMiddleware
 
-  @@location = "http://"
+  @@location = "freshtag.me"
   @@api_key = "20179871"
   @@api_secret = "120b9dcb30d979f5dde64625e053186524f4aefa"
   @@api_url = "https://api.opentok.com/hl"
 
   def self.session
     opentok = ::OpenTok::OpenTokSDK.new @@api_key, @@api_secret
-    session_id = opentok.create_session @@location
+    session_id = opentok.create_session
+    #@@location
     StringIO.new(session_id.to_s)
   end
 
