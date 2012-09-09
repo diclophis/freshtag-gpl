@@ -11,9 +11,8 @@ class TokBoxMiddleware
 
   def self.session
     opentok = ::OpenTok::OpenTokSDK.new @@api_key, @@api_secret
-    session_id = opentok.create_session# @@location
-    puts session_id.inspect
-    session_id.to_s
+    session_id = opentok.create_session @@location
+    StringIO.new(session_id.to_s)
   end
 
   def self.token(env)
@@ -21,7 +20,7 @@ class TokBoxMiddleware
     session = req.params["session"]
     opentok = ::OpenTok::OpenTokSDK.new @@api_key, @@api_secret
     token_id = opentok.generate_token :session_id => session
-    token_id.to_s
+    StringIO.new(token_id)
   end
 
 end
