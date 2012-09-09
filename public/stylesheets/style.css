@@ -131,7 +131,7 @@ a, a:hover, a:visited {
  margin-top: 10px;
 }
 
-.chat_feed {
+#chat-feed {
   height: 145px;
   background: rgba(255,255,255,.7);
   -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);

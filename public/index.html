@@ -10,6 +10,7 @@
         var dynamicToken = null;
         var liveContainer = document.getElementById("live");
         var streamsContainer = document.getElementById("streams").children[0];
+        var chatForm = document.getElementById("chat-form");
         var chatInput = document.getElementById("chat-input");
         var chatButton = document.getElementById("chat-button");
         var sessionDataRef = null;
@@ -213,12 +214,18 @@
             }
           });
 
-          chatDataRef.on('child_added', function(snapshot) {
+          var ts = Math.round(new Date().getTime() / 1000);
+          ts -= 60;
+          console.log(ts);
+
+          chatDataRef.limit(10).on('child_added', function(snapshot) {
             //We'll fill this in later.
             console.log(snapshot.val());
-            var body = snapshot.val();
-            var newMessageLi = createMessageLi(body);
+            var message = snapshot.val();
+            var newMessageLi = createMessageLi(message.body);
             messagesList.appendChild(newMessageLi);
+            var chatFeed = document.getElementById("chat-feed");
+            chatFeed.scrollTop = chatFeed.scrollHeight;
           });
 
           return false;
@@ -228,13 +235,23 @@
           e.preventDefault();
 
           if (chatDataRef != null) {
-            chatDataRef.push(chatInput.value);
+            chatInput.disabled = true;
+            chatButton.disabled = true;
+            var message = {
+              body: chatInput.value
+            };
+            chatDataRef.push(message, function() {
+              chatInput.value = "";
+              chatInput.disabled = false;
+              chatButton.disabled = false;
+              chatInput.focus();
+            });
           }
           return false;
         }
 
         document.getElementById("connect-form").onclick = onGetSession;
-        chatButton.onclick = onClickChat;
+        chatForm.onsubmit = onClickChat;
       });
     </script>
   </head>
@@ -274,13 +291,15 @@
         </div>
       </div>
       <div class="grid_8 chat">
-        <div class="chat_feed">
+        <div id="chat-feed">
           <ul id="posted_msgs">
           </ul>
         </div>
         <div class="chat_input_box">
-          <input placeholder="chat message" class="chat_input" id="chat-input"/>
-          <div class="chat_submit"><input id="chat-button" type="button" value="SEND" class="chat_submit_btn"/></div>
+          <form id="chat-form">
+            <input placeholder="chat message" autocomplete="off" class="chat_input" id="chat-input"/>
+            <div class="chat_submit"><input id="chat-button" type="submit" value="SEND" class="chat_submit_btn"/></div>
+          </form>
         </div>
       </div>
     </div>
