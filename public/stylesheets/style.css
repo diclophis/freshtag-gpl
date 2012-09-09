@@ -34,7 +34,7 @@ a, a:hover, a:visited {
 }
 
 .streams-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
-.streams-container > object { -webkit-transition: all 0.17s; -moz-transition: all 0.17s; position: relative; float: left; background-color: rgba(32, 32, 32, 0.2); }
+.streams-container > object { position: relative; float: left; background-color: rgba(32, 32, 32, 0.2); }
 
 #single-stream object { width: 100%; height: 100%; }
 #double-stream object { width: 50%; height: 100%; }
