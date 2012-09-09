@@ -164,7 +164,7 @@
           return false;
         };
 
-        document.getElementById("connect-form").onClick = onGetSession;
+        document.getElementById("connect-form").onclick = onGetSession;
       });
     </script>
   </head>
@@ -182,8 +182,7 @@
         </div>
       </div>
       <div class="grid_4 left_col">
-        <div class="myself">
-          
+        <div id="myself">
           <div class="nickname_wrapper">
             <div class="nickname">
               nickname
@@ -208,7 +207,10 @@
           </div>
         </div>
       </div>
-      <div class="grid_8 others stream-container" id="single-stream"></div>
+      <div id="streams">
+        <div class="grid_8 others stream-container" id="single-stream">
+        </div>
+      </div>
       <div class="grid_8 chat">
         <div class="chat_feed">
 

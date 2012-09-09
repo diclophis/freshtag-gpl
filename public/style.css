@@ -92,7 +92,7 @@ z-index: 1;
         box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
 }
 
-.myself{
+#myself{
 height: 200px;
 background: red;
 width: 100%;
