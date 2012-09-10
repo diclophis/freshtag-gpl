@@ -142,7 +142,7 @@ a, a:hover, a:visited {
   overflow-y: scroll;
 }
 
-.chat_input_box {
+x.chat_input_box {
   height:30px;    
 }
 
@@ -152,7 +152,7 @@ a, a:hover, a:visited {
   float: left;
   position: relative;
   left:-1px;
-  padding-left: 17px;  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, .4);
+  padding-left: 17px;
 }
 
 .chat_submit {
@@ -180,18 +180,6 @@ span.name img {
   height: 60px;
   margin: 0em 0.5em 0.5em 0;
   vertical-align: top;
-}
-
-.freshtag_input {
-  float: left;
-  width: 204px;
-  height: 24px;
-  padding-left: 7px;
-}
-
-.freshtag_submit_btn {
-  width: 85px;
-  height: 31px;
 }
 
 .status_report {
@@ -238,4 +226,32 @@ span.name img {
   padding: 12px 0px 0px 5px;
   font-size: 18px;
   color: #fff;
+}
+
+input {
+  margin: 1% 0 0 2%;
+  padding: 0 1em 0 1em;
+  border: 0px;
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, .4);
+  height: 3em;
+}
+
+#freshtag-input {
+  width: 65%;
+}
+
+#freshtag-button {
+  width: 20%;
+}
+
+#chat-input {
+  width: 62%;
+}
+
+#chat-media-button {
+  width: 13%;
+}
+
+#chat-button {
+  width: 13%;
 }

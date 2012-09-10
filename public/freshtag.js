@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var onGetSession = function(e) {
     e.preventDefault();
-    var hash = document.getElementById("freshtag-id").value;
+    var hash = document.getElementById("freshtag-input").value;
     var namearr = hash.split("#"); // #topic -> ['', topic']
 
     var topic = namearr[namearr.length - 1]; // get last element from namearr
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  document.getElementById("connect-form").onclick = onGetSession;
+  document.getElementById("freshtag-form").onsubmit = onGetSession;
 
   chatForm.onsubmit = function(e) {
     e.preventDefault();

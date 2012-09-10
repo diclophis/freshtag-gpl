@@ -5,7 +5,7 @@
     <title>freshtag.me</title>
     <script src="http://static.firebase.com/v0/firebase.js"></script>
     <script src="http://static.opentok.com/v0.91/js/TB.min.js"></script>
-    <script src="http://cdn.getchute.com/media-chooser.min.js"></script>
+    <script src="media-chooser.min.js"></script>
     <script src="freshtag.js"></script>
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/960.css">
@@ -28,12 +28,10 @@
           <div class="role">ROLE: <span class="green" id="role">ADMIN</span></div>
         </div>
         <div class="freshtag_input_box">
-          <input placeholder="#hashtag" id="freshtag-id" class="freshtag_input">
-        
-        <div class="freshtag_submit">
-          <input type="button" id="connect-form" value="SUBMIT" class="freshtag_submit_btn">
-        </div>
-          
+          <form id="freshtag-form">
+            <input placeholder="#hashtag" id="freshtag-input">
+            <input type="submit" id="freshtag-button" value="SUBMIT">
+          </form>
         </div>
         <div class="trending">
           <div class="trending_head">
@@ -52,9 +50,9 @@
         </div>
         <div class="chat_input_box">
           <form id="chat-form">
-            <input placeholder="chat message" autocomplete="off" class="chat_input" id="chat-input"/>
-            <div class="chat_submit"><input id="chat-button" type="submit" value="SEND" class="chat_submit_btn"/></div>
             <input type="button" id="chat-media-button" value="MEDIA"/>
+            <input placeholder="..." autocomplete="off" id="chat-input"/>
+            <input id="chat-button" type="submit" value="SEND"/>
           </form>
         </div>
       </div>
