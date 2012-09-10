@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require "opentok"
+require "rack/contrib"
 
 class TokBoxMiddleware
 
@@ -29,7 +30,7 @@ end
 
 use Rack::ShowExceptions
 
-use Rack::Static,
+use Rack::StaticCache,
   :urls => ["/media-chooser.min.js", "/freshtag.js", "/webrtc.html", "/cookies.js", "/images", "/stylesheets"],
   :root => "public"
 

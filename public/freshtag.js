@@ -168,23 +168,16 @@ document.addEventListener("DOMContentLoaded", function () {
     
     var li = document.createElement("li");
 
-    var postDiv = document.createElement("div");
-    postDiv.className = "post";
-
-    var nameSpan = document.createElement("span");
-    nameSpan.className = "name";
-
-    var msgSpan = document.createElement("span");
-    msgSpan.className = "msg"; 
-
     if (message.imgData != null && message.imgData.length > 0) {
       var img = document.createElement("img");
-      img.setAttribute("src", "data:image/png;base64," + message.imgData);
-      nameSpan.appendChild(img);
+      img.setAttribute("src", "data:image/png;base64," + (message.imgData));
+      li.appendChild(img);
     }
 
     if (message.body != null) {
+      var msgSpan = document.createElement("p");
       msgSpan.innerHTML = htmlEntities(message.body);
+      li.appendChild(msgSpan);
     }
 
     if (message.chuteUrls != null && message.chuteUrls.length > 0) {
@@ -192,13 +185,9 @@ document.addEventListener("DOMContentLoaded", function () {
         var url = message.chuteUrls[i];
         var img = document.createElement("img");
         img.src = Chute.fit(400, 300, url);
-        msgSpan.appendChild(img);
+        li.appendChild(img);
       }
     }
-
-    postDiv.appendChild(nameSpan);
-    postDiv.appendChild(msgSpan);
-    li.appendChild(postDiv);
 
     return li;
   };
@@ -242,7 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var createMessage = function() {
     var message = {
-      imgData: publisher.getImgData(),
+      imgData: (publisher.getImgData()),
       body: null,
       chutUrls: null
     };
