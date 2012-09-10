@@ -17,10 +17,6 @@
 }
 
 body,ul,html { padding: 0; margin: 0; width: 100%; height: 100%; }
-/*
-img { max-width: 13.5em; max-height: 13.5em }
-iframe { max-width: 13.5em; max-height: 13.5em; }
-*/
 li { list-style-type: none; }
 body {
   background: url('../images/climpek2x.png') top left;
@@ -37,7 +33,7 @@ a, a:hover, a:visited {
 }
 
 .streams-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
-.streams-container > object { -moz-transition: all 5s; -webkit-transition: all 5s; position: relative; float: left; background-color: rgba(32, 32, 32, 0.2); }
+.streams-container > object { padding: 0; margin: 0; -moz-transition: all 5s; -webkit-transition: all 5s; position: relative; float: left; background-color: rgba(32, 32, 32, 0.2); }
 
 #single-stream object { width: 100%; height: 100%; }
 #double-stream object { width: 50%; height: 100%; }
@@ -143,30 +139,6 @@ a, a:hover, a:visited {
   overflow-y: scroll;
 }
 
-x.chat_input_box {
-  height:30px;    
-}
-
-.chat_input {
-  height: 24px;
-  width: 75%;
-  float: left;
-  position: relative;
-  left:-1px;
-  padding-left: 17px;
-}
-
-.chat_submit {
-  height: 24px;
-  width: 20%;
-  float: right;
-}
-
-.chat_submit_btn {
-  width: 102%;
-  height: 30px;
-}
-
 ul#posted_msgs li {
   margin-bottom: 1em;
   clear: left;
@@ -234,7 +206,9 @@ input {
   margin: 1% 0 0 2%;
   padding: 0 1em 0 1em;
   border: 0px;
+  /*
   box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, .4);
+  */
   height: 3em;
 }
 
