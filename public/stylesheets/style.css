@@ -173,6 +173,13 @@ ul.posted_msgs li {
   padding: 10px 20px 10px 20px;
 }
 
+span.name img {
+  width: 80px;
+  height: 60px;
+  margin: 0em 0.5em 0.5em 0;
+  vertical-align: top;
+}
+
 .freshtag_input {
   float: left;
   width: 204px;

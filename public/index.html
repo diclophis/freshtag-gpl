@@ -3,6 +3,7 @@
   <head>
     <script src="http://static.firebase.com/v0/firebase.js"></script>
     <script src="http://static.opentok.com/v0.91/js/TB.min.js"></script>
+    <script src="http://cdn.getchute.com/media-chooser.min.js"></script>
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/960.css">
     <script>
@@ -16,6 +17,8 @@
         var sessionDataRef = null;
         var chatDataRef = null;
         var messagesList = document.getElementById("posted_msgs");
+        var publisher = null;
+        var subscribers = {};
 
         var relayoutStreamsForElementCount = function(length) {
           if (length == 1) {
@@ -69,8 +72,6 @@
         };
 
         var loadTokBox = function(sessionId, token) {
-          var publisher;
-          var subscribers = {};
           var apiKey = 20179871;
           var session = null;
 
@@ -170,7 +171,7 @@
           return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
-        var createMessageLi = function(body) {
+        var createMessageLi = function(body, imgData) {
 
           var li = document.createElement("li");
 
@@ -182,6 +183,12 @@
 
           var msgSpan = document.createElement("span");
           msgSpan.className = "msg"; 
+
+          if (imgData.length > 0) {
+            var img = document.createElement("img");
+            img.setAttribute("src", "data:image/png;base64," + imgData);
+            nameSpan.appendChild(img);
+          }
 
           msgSpan.innerHTML = htmlEntities(body);
 
@@ -222,7 +229,7 @@
             //We'll fill this in later.
             console.log(snapshot.val());
             var message = snapshot.val();
-            var newMessageLi = createMessageLi(message.body);
+            var newMessageLi = createMessageLi(message.body, message.imgData);
             messagesList.appendChild(newMessageLi);
             var chatFeed = document.getElementById("chat-feed");
             chatFeed.scrollTop = chatFeed.scrollHeight;
@@ -238,8 +245,12 @@
             chatInput.disabled = true;
             chatButton.disabled = true;
             var message = {
-              body: chatInput.value
+              body: chatInput.value,
+              imgData: publisher.getImgData()
             };
+
+
+
             chatDataRef.push(message, function() {
               chatInput.value = "";
               chatInput.disabled = false;
