@@ -186,7 +186,7 @@
           var msgSpan = document.createElement("span");
           msgSpan.className = "msg"; 
 
-          if (message.body != null && message.imgData.length > 0) {
+          if (message.imgData != null && message.imgData.length > 0) {
             var img = document.createElement("img");
             img.setAttribute("src", "data:image/png;base64," + message.imgData);
             nameSpan.appendChild(img);
