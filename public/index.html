@@ -8,12 +8,16 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/960.css">
     <script>
       document.addEventListener("DOMContentLoaded", function () {
+        
+        Chute.setApp('504d2f11cc72f836e3000001');
+
         var dynamicToken = null;
         var liveContainer = document.getElementById("live");
         var streamsContainer = document.getElementById("streams").children[0];
         var chatForm = document.getElementById("chat-form");
         var chatInput = document.getElementById("chat-input");
         var chatButton = document.getElementById("chat-button");
+        var chatMediaButton = document.getElementById("chat-media-button");
         var sessionDataRef = null;
         var chatDataRef = null;
         var messagesList = document.getElementById("posted_msgs");
@@ -87,7 +91,6 @@
             session.addEventListener('streamCreated', streamCreatedHandler);
             session.addEventListener('streamDestroyed', streamDestroyedHandler);
             session.connect(apiKey, token);
-            console.log("wtf");
           }
 
           // Called when user wants to start publishing to the session
@@ -139,7 +142,6 @@
             // This signals that the user was disconnected from the Session. Any subscribers and publishers
             // will automatically be removed. This default behaviour can be prevented using event.preventDefault()
             publisher = null;
-            console.log("sessionDisconnectedHandler");
           }
 
           function connectionDestroyedHandler(event) {
@@ -171,8 +173,8 @@
           return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
 
-        var createMessageLi = function(body, imgData) {
-
+        var createMessageLi = function(message) {
+          
           var li = document.createElement("li");
 
           var postDiv = document.createElement("div");
@@ -184,13 +186,24 @@
           var msgSpan = document.createElement("span");
           msgSpan.className = "msg"; 
 
-          if (imgData.length > 0) {
+          if (message.body != null && message.imgData.length > 0) {
             var img = document.createElement("img");
-            img.setAttribute("src", "data:image/png;base64," + imgData);
+            img.setAttribute("src", "data:image/png;base64," + message.imgData);
             nameSpan.appendChild(img);
           }
 
-          msgSpan.innerHTML = htmlEntities(body);
+          if (message.body != null) {
+            msgSpan.innerHTML = htmlEntities(message.body);
+          }
+
+          if (message.chuteUrls != null && message.chuteUrls.length > 0) {
+            for (var i=0; i<message.chuteUrls.length; i++) {
+              var url = message.chuteUrls[i];
+              var img = document.createElement("img");
+              img.src = Chute.fit(400, 300, url);
+              msgSpan.appendChild(img);
+            }
+          }
 
           postDiv.appendChild(nameSpan);
           postDiv.appendChild(msgSpan);
@@ -223,13 +236,11 @@
 
           var ts = Math.round(new Date().getTime() / 1000);
           ts -= 60;
-          console.log(ts);
 
           chatDataRef.limit(10).on('child_added', function(snapshot) {
             //We'll fill this in later.
-            console.log(snapshot.val());
             var message = snapshot.val();
-            var newMessageLi = createMessageLi(message.body, message.imgData);
+            var newMessageLi = createMessageLi(message, message);
             messagesList.appendChild(newMessageLi);
             var chatFeed = document.getElementById("chat-feed");
             chatFeed.scrollTop = chatFeed.scrollHeight;
@@ -238,19 +249,19 @@
           return false;
         };
 
-        var onClickChat = function(e) {
-          e.preventDefault();
+        var createMessage = function() {
+          var message = {
+            imgData: publisher.getImgData(),
+            body: null,
+            chutUrls: null
+          };
+          return message;
+        };
 
+        var pushMessage = function(message) {
           if (chatDataRef != null) {
             chatInput.disabled = true;
             chatButton.disabled = true;
-            var message = {
-              body: chatInput.value,
-              imgData: publisher.getImgData()
-            };
-
-
-
             chatDataRef.push(message, function() {
               chatInput.value = "";
               chatInput.disabled = false;
@@ -258,11 +269,29 @@
               chatInput.focus();
             });
           }
-          return false;
-        }
+        };
 
         document.getElementById("connect-form").onclick = onGetSession;
-        chatForm.onsubmit = onClickChat;
+
+        chatForm.onsubmit = function(e) {
+          e.preventDefault();
+
+          var message = createMessage();
+          message.body = chatInput.value;
+          pushMessage(message);
+
+          return false;
+        };
+
+        chatMediaButton.onclick = function(e) {
+          e.preventDefault();
+          Chute.MediaChooser.choose(function(urls, data) {
+            var message = createMessage();
+            message.chuteUrls = urls;
+            pushMessage(message);
+          });
+          return false;
+        };
       });
     </script>
   </head>
@@ -310,6 +339,7 @@
           <form id="chat-form">
             <input placeholder="chat message" autocomplete="off" class="chat_input" id="chat-input"/>
             <div class="chat_submit"><input id="chat-button" type="submit" value="SEND" class="chat_submit_btn"/></div>
+            <input type="button" id="chat-media-button" value="MEDIA"/>
           </form>
         </div>
       </div>

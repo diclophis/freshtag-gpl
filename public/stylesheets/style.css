@@ -17,8 +17,10 @@
 }
 
 body,ul,html { padding: 0; margin: 0; width: 100%; height: 100%; }
+/*
 img { max-width: 13.5em; max-height: 13.5em }
 iframe { max-width: 13.5em; max-height: 13.5em; }
+*/
 body {
   background: url('../images/climpek2x.png') top left;
   font-family: sans-serif;
