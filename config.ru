@@ -30,7 +30,7 @@ end
 use Rack::ShowExceptions
 
 use Rack::Static,
-  :urls => ["/webrtc.html", "/cookies.js", "/images", "/stylesheets"],
+  :urls => ["/freshtag.js", "/webrtc.html", "/cookies.js", "/images", "/stylesheets"],
   :root => "public"
 
 default_resource = Proc.new { |env|
