@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
   var chatInput = document.getElementById("chat-input");
   var chatButton = document.getElementById("chat-button");
   var chatMediaButton = document.getElementById("chat-media-button");
+  var topBar = document.getElementById("top-bar");
+
   var sessionDataRef = null;
   var chatDataRef = null;
   var messagesList = document.getElementById("posted_msgs");
@@ -194,6 +196,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var onGetSession = function(e) {
     e.preventDefault();
+
+    document.body.className = "connected";
+
+    /*
     var hash = document.getElementById("freshtag-input").value;
     var namearr = hash.split("#"); // #topic -> ['', topic']
 
@@ -225,6 +231,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var chatFeed = document.getElementById("chat-feed");
       chatFeed.scrollTop = chatFeed.scrollHeight;
     });
+    */
 
     return false;
   };

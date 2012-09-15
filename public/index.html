@@ -3,8 +3,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <title>freshtag.me</title>
-    <script src="http://static.firebase.com/v0/firebase.js"></script>
-    <script src="http://static.opentok.com/v0.91/js/TB.min.js"></script>
+    <script src="javascripts/firebase.js"></script>
+    <script src="javascripts/TB.min.js"></script>
     <script src="javascripts/media-chooser.min.js"></script>
     <script src="javascripts/freshtag.js"></script>
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
@@ -14,48 +14,47 @@
     <div class="container_12 cont">
       <div id="top-bar">
         <div class="grid_12">
-          <div class="grid_4"><a href="./">freshtag.me</a></div>
-          <div class="grid_4"></div>
+          <div id="logo" class="grid_4"><a href="./">freshtag.me</a></div>
           <div class="grid_4">
-            <span>#<span class="green">DEMO2012</span></span> 
-            <span>Connected: <span class="green">0</span></span>
+            <form id="freshtag-form">
+              <input placeholder="#hashtag" id="freshtag-input">
+              <input type="submit" id="freshtag-button" value="SUBMIT">
+            </form>
+          </div>
+          <div class="grid_4">
           </div>
         </div>
       </div>
-      <div id="left-col" class="grid_4">
-        <div id="myself"></div>
-        <div class="status">
-          <div class="status_report">REC: <span class="green" id="status">ON</span></div>
-          <div class="status_report">NET: <span class="green" id="status">OK</span></div>
-          <div class="role">MODE: <span class="green" id="role">OWNER</span></div><!--party/lurk-->
-        </div>
-        <div class="freshtag_input_box">
-          <form id="freshtag-form">
-            <input placeholder="#hashtag" id="freshtag-input">
-            <input type="submit" id="freshtag-button" value="SUBMIT">
-          </form>
-        </div>
-        <div class="trending">
-          <div class="trending_head">
-            Trending Topics
+      <div id="live">
+        <div id="left-col" class="grid_4">
+          <div id="myself"></div>
+          <div class="status">
+            <div class="status_report">REC: <span class="green" id="status">ON</span></div>
+            <div class="status_report">NET: <span class="green" id="status">OK</span></div>
+            <div class="role">MODE: <span class="green" id="role">OWNER</span></div><!--guest/lurk-->
+          </div>
+          <div class="trending">
+            <div class="trending_head">
+              Trending Topics
+            </div>
           </div>
         </div>
-      </div>
-      <div id="streams">
-        <div class="grid_8 others stream-container" id="single-stream">
+        <div id="streams">
+          <div class="grid_8 others stream-container" id="single-stream">
+          </div>
         </div>
-      </div>
-      <div class="grid_8 chat">
-        <div id="chat-feed">
-          <ul id="posted_msgs">
-          </ul>
-        </div>
-        <div class="chat_input_box">
-          <form id="chat-form">
-            <input type="button" id="chat-media-button" value="MEDIA"/>
-            <input placeholder="..." autocomplete="off" id="chat-input"/>
-            <input id="chat-button" type="submit" value="SEND"/>
-          </form>
+        <div class="grid_8 chat">
+          <div id="chat-feed">
+            <ul id="posted_msgs">
+            </ul>
+          </div>
+          <div class="chat_input_box">
+            <form id="chat-form">
+              <input type="button" id="chat-media-button" value="MEDIA"/>
+              <input placeholder="..." autocomplete="off" id="chat-input"/>
+              <input id="chat-button" type="submit" value="SEND"/>
+            </form>
+          </div>
         </div>
       </div>
     </div>

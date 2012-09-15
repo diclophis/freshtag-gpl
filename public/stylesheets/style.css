@@ -42,7 +42,7 @@ a, a:hover, a:visited {
 #nine-stream object { width: 33.3%; height: 33%; }
 #twelve-stream object { width: 25%; height: 33%; }
 
-.logo {
+#logo {
   font-family: 'edmondsans';
   font-weight: bold;
   margin-left: 0px !important;
@@ -73,28 +73,21 @@ a, a:hover, a:visited {
   display: inline-block; 
 }
 
-#top-bar {
-  height: 45px;
-  position: fixed;
-  background: rgba(0, 0, 0, .9);
-  z-index: 1;
-}
 
 span {
   color: white;
 }
 
 .cont {
-  min-height:600px;
   height: 100%;
 }
 
 #left-col {
   background: rgba(0,0,0,.7);
-  min-height: 540px;
   -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
   box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
   margin: 65px 0px 0px 0px;
+  min-height: 600px;
 }
 
 #publisher object {
@@ -197,12 +190,10 @@ ul#posted_msgs li p {
 }
 
 input {
-  margin: 1% 0 0 2%;
+  margin: 0;
   padding: 0 1em 0 1em;
   border: 0px;
-  /*
-  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, .4);
-  */
+  border-spacing: 0;
   height: 3em;
 }
 
@@ -224,4 +215,49 @@ input {
 
 #chat-button {
   width: 13%;
+}
+
+#live {
+  opacity: 0;
+  -moz-transition: all 1s;
+  -webkit-transition: all 1s;
+}
+
+.connected #live {
+  opacity: 1;
+}
+
+#freshtag-form {
+  position: absolute;
+  top: 50%;
+  width: 32%;
+  margin: 0.25em 0 0 0.55em;
+  height: 100%;
+  -moz-transition: all 0.66s;
+  -webkit-transition: all 0.66s;
+}
+
+#freshtag-form input[type="submit"] {
+  border-top: 0.75em solid black;
+}
+
+#top-bar {
+  height: 100%;
+  position: fixed;
+  background: rgba(0, 0, 0, .9);
+  z-index: 1;
+  -moz-transition: all 0.66s;
+  -webkit-transition: all 0.66s;
+}
+
+.connected #top-bar {
+  height: 3.125em;
+}
+
+#top-bar .grid_12, #top-bar .grid_12 .grid_4 {
+  height: 100%;
+}
+
+.connected #freshtag-form {
+  top: 0%;
 }
