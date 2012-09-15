@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   
   Chute.setApp('504d2f11cc72f836e3000001');
+  var apiKey = 20179871;
+  var session = null;
 
   var dynamicToken = null;
   var liveContainer = document.getElementById("live");
@@ -10,6 +12,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var chatButton = document.getElementById("chat-button");
   var chatMediaButton = document.getElementById("chat-media-button");
   var topBar = document.getElementById("top-bar");
+  var freshtagInput = document.getElementById("freshtag-input");
+  var roleButton = document.getElementById("role-button");
+
+  freshtagInput.focus();
 
   var sessionDataRef = null;
   var chatDataRef = null;
@@ -38,9 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
   var createNewStreamDiv = function() {
     var length = (streamsContainer.children.length) + 1;
     relayoutStreamsForElementCount(length);
-    //var newStreamDiv = document.createElement('div');
-    //newStreamDiv.className = "stream";
-    //streamsContainer.appendChild(newStreamDiv);
     var newStreamRepl = document.createElement('div');
     streamsContainer.appendChild(newStreamRepl);
     return newStreamRepl;
@@ -68,9 +71,28 @@ document.addEventListener("DOMContentLoaded", function () {
     req.send();
   };
 
+    // Called when user wants to start publishing to the session
+    function startPublishing() {
+      if (!publisher) {
+        var parentDiv = document.getElementById("myself");
+        var publisherDiv = document.createElement('div');
+        var publisherDivDiv = document.createElement('div');
+        publisherDivDiv.setAttribute('id', "publisher-repl");
+        publisherDiv.setAttribute('id', 'publisher');
+        publisherDiv.appendChild(publisherDivDiv);
+        parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
+        publisher = session.publish(publisherDivDiv.id);
+      }
+    }
+
+    function stopPublishing() {
+      if (publisher) {
+        session.unpublish(publisher);
+      }
+      publisher = null;
+    }
+
   var loadTokBox = function(sessionId, token) {
-    var apiKey = 20179871;
-    var session = null;
 
     if (TB.checkSystemRequirements() != TB.HAS_REQUIREMENTS) {
       alert("You don't have the minimum requirements to run this application." + "Please upgrade to the latest version of Flash.");
@@ -86,35 +108,13 @@ document.addEventListener("DOMContentLoaded", function () {
       session.connect(apiKey, token);
     }
 
-    // Called when user wants to start publishing to the session
-    function startPublishing() {
-      if (!publisher) {
-        var parentDiv = document.getElementById("myself");
-        var publisherDiv = document.createElement('div');
-        var publisherDivDiv = document.createElement('div');
-        publisherDivDiv.setAttribute('id', "publisher-repl");
-        publisherDiv.setAttribute('id', 'publisher');
-        publisherDiv.appendChild(publisherDivDiv);
-        parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
-        publisher = session.publish(publisherDivDiv.id);
-        //publisher = session.publish(parentDiv.id);
-        //liveContainer.className = "connected";
-      }
-    }
-
-    function stopPublishing() {
-      if (publisher) {
-        session.unpublish(publisher);
-      }
-      publisher = null;
-    }
   
     function sessionConnectedHandler(event) {
       // Subscribe to all streams currently in the Session
       for (var i = 0; i < event.streams.length; i++) {
         addStream(event.streams[i]);
       }
-      startPublishing();
+      //startPublishing();
     }
 
     function streamCreatedHandler(event) {
@@ -199,14 +199,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.body.className = "connected";
 
-    /*
-    var hash = document.getElementById("freshtag-input").value;
+    var hash = freshtagInput.value;
     var namearr = hash.split("#"); // #topic -> ['', topic']
 
     var topic = namearr[namearr.length - 1]; // get last element from namearr
-    document.getElementById("freshtag").innerHTML = topic;
+
     sessionDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/session/' + topic);
     chatDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/chat/' + topic);
+
     sessionDataRef.on("value", function(snapshot) {
       var foundSession = snapshot.val();
       if (foundSession != null) {
@@ -214,6 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
           loadTokBox(foundSession, tokenFromRuby);
         });
       } else {
+        // you got the lock
         getSession(function(newSession) {
           sessionDataRef.set(newSession);
         });
@@ -231,14 +232,16 @@ document.addEventListener("DOMContentLoaded", function () {
       var chatFeed = document.getElementById("chat-feed");
       chatFeed.scrollTop = chatFeed.scrollHeight;
     });
-    */
+
+    chatInput.focus();
 
     return false;
   };
 
   var createMessage = function() {
+    var imgData = (publisher != null) ? publisher.getImgData() : null;
     var message = {
-      imgData: (publisher.getImgData()),
+      imgData: imgData,
       body: null,
       chutUrls: null
     };
@@ -278,5 +281,9 @@ document.addEventListener("DOMContentLoaded", function () {
       pushMessage(message);
     });
     return false;
+  };
+
+  roleButton.onclick = function(e) {
+    startPublishing();
   };
 });
