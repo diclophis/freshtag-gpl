@@ -30,8 +30,10 @@ end
 
 use Rack::ShowExceptions
 
-use Rack::StaticCache,
+#use Rack::StaticCache,
+use Rack::Static,
   :urls => ["/javascripts", "/images", "/stylesheets"],
+  :cache_control => 'public, must-revalidate, max-age=0, no-cache',
   :root => "public"
 
 default_resource = Proc.new { |env|
