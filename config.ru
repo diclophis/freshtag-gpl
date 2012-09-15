@@ -31,7 +31,7 @@ end
 use Rack::ShowExceptions
 
 use Rack::StaticCache,
-  :urls => ["/media-chooser.min.js", "/freshtag.js", "/webrtc.html", "/cookies.js", "/images", "/stylesheets"],
+  :urls => ["/javascripts", "/images", "/stylesheets"],
   :root => "public"
 
 default_resource = Proc.new { |env|

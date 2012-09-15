@@ -73,20 +73,15 @@ a, a:hover, a:visited {
   display: inline-block; 
 }
 
-.top_bar_bg{
+#top-bar {
   height: 45px;
-  width: 100%;
   position: fixed;
   background: rgba(0, 0, 0, .9);
   z-index: 1;
 }
 
-.top_bar {
-  height: 40px;
-  position: fixed;
+span {
   color: white;
-  z-index: 2;
-  padding-top: 5px;
 }
 
 .cont {
@@ -94,14 +89,13 @@ a, a:hover, a:visited {
   height: 100%;
 }
 
-.left_col {
+#left-col {
   background: rgba(0,0,0,.7);
   min-height: 540px;
   -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
   box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
   margin: 65px 0px 0px 0px;
 }
-
 
 #publisher object {
   width: 100%;
