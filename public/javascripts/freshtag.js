@@ -297,3 +297,17 @@ document.addEventListener("DOMContentLoaded", function () {
     startPublishing();
   };
 });
+
+function onTrendData(data) {
+  var parent = document.getElementById("trends");
+  for (var loc = 0; loc < data.length; loc++) {
+    for (var i = 0; i < data[loc]["trends"].length; i++) {
+      var trend = document.createElement("div");
+      var anchor = document.createElement("a");
+      parent.appendChild(trend);
+      trend.appendChild(anchor);
+      anchor.href = data[loc]["trends"][i]["url"];
+      anchor.textContent = data[loc]["trends"][i]["name"];
+    }
+  }
+}
