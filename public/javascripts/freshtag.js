@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  
+ 
   Chute.setApp('504d2f11cc72f836e3000001');
   var apiKey = 20179871;
   var session = null;
@@ -23,6 +23,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var publisher = null;
   var subscribers = {};
 
+  var updateRoomCount = function(count) {
+    // need a div to connect to
+  };
+
   var relayoutStreamsForElementCount = function(length) {
     if (length == 1) {
       streamsContainer.id = "single-stream";
@@ -39,6 +43,8 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       throw ("max video streams: " + length);
     }
+
+    updateRoomCount(length);
   };
 
   var createNewStreamDiv = function() {
@@ -82,6 +88,8 @@ document.addEventListener("DOMContentLoaded", function () {
         publisherDiv.appendChild(publisherDivDiv);
         parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
         publisher = session.publish(publisherDivDiv.id);
+        roleButton.className = "guest";
+        roleButton.innerHTML = "GUEST";
       }
     }
 
@@ -114,7 +122,9 @@ document.addEventListener("DOMContentLoaded", function () {
       for (var i = 0; i < event.streams.length; i++) {
         addStream(event.streams[i]);
       }
-      //startPublishing();
+      if (allCookies.getItem("start-publishing-when-connected")) {
+        startPublishing();
+      }
     }
 
     function streamCreatedHandler(event) {

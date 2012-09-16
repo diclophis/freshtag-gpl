@@ -6,6 +6,7 @@
     <script src="javascripts/firebase.js"></script>
     <script src="javascripts/TB.min.js"></script>
     <script src="javascripts/media-chooser.min.js"></script>
+    <script src="javascripts/cookies.js"></script>
     <script src="javascripts/freshtag.js"></script>
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/960.css">
@@ -27,9 +28,10 @@
         <div id="left-col" class="grid_4">
           <div id="myself"></div>
           <div class="status">
-            <div class="status_report">REC: <span class="green" id="status">ON</span></div>
-            <div class="status_report">NET: <span class="green" id="status">OK</span></div>
-            <div class="role">MODE: <span class="green" id="role-button">OWNER</span></div><!--guest/lurk-->
+            <div id="role">
+              <!--owner/guest/lurk-->
+              MODE: <span class="lurk" id="role-button">LURK</span>
+            </div>
           </div>
           <div class="trending">
             <div class="trending_head">

@@ -95,15 +95,6 @@ span {
   position: relative;
 }
 
-.status {
-  height:29px;
-  padding-top: 11px;
-  color: white;
-  font-family: 'edmondsans';
-  font-weight: bold;
-  width:100%
-}
-
 .others {
    background: rgba(0,0,0,.7);
    height:350px;
@@ -143,17 +134,6 @@ ul#posted_msgs li p {
   padding: 0.5em 0 0 0;
 }
 
-.status_report {
-  text-align: left !important;
-  float: left;
-  margin-left: 5px;
-}
-
-.role {
-  text-align: right !important;
-  margin-right: 5px;
-}
- 
 .nickname_wrapper {
   position:relative;
   top: 170px;
@@ -260,4 +240,21 @@ input {
 
 .connected #freshtag-form {
   top: 0%;
+}
+
+#role {
+  text-align: right;
+  margin: 1em;
+}
+
+#role-button {
+  color: white;
+}
+
+#role-button.lurk {
+  color: yellow;
+}
+
+#role-button.guest {
+  color: green;
 }
