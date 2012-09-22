@@ -10,10 +10,11 @@
     <script src="javascripts/freshtag.js"></script>
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css">
     <link rel="stylesheet" type="text/css" href="stylesheets/960.css">
+
   </head>
-  <body>
-    <div class="container_12 cont">
-      <div id="top-bar">
+  <body id="body">
+     <div id="top-bar">
+      <div class="container_12">
         <div class="grid_12">
           <div id="logo" class="grid_4"><a href="./">freshtag.me</a></div>
           <div class="grid_4" id="top_btn">
@@ -24,11 +25,15 @@
           </div>
         </div>
       </div>
+      </div>
+    <div class="container_12 cont">
+     
       <div id="live">
         <div id="left-col" class="grid_4">
           <div class="top_left">
             <div id="myself"></div>
             <div class="status">
+              <div id="roomNumber"></div>
               <div id="role">
               <!--owner/guest/lurk-->
               MODE: <span class="lurk" id="role-button">OFF-AIR</span>
@@ -65,5 +70,11 @@
       </div>
     </div>
     <script src="https://api.twitter.com/1/trends/1.json?callback=onTrendData"></script>
+        <script type="text/javascript">
+    x = Math.floor((Math.random()*6)+1);
+    document.getElementById("body").style.backgroundImage="url(../images/bg"+x+".jpg)"
+
+
+    </script>
   </body>
 </html>
