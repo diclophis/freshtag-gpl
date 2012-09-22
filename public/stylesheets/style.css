@@ -86,13 +86,17 @@ span {
   background: rgba(0,0,0,.7);
   -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
   box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
-  margin: 65px 0px 0px 0px;
-  min-height: 600px;
+  margin: 65px 10px 0px 10px;
+  min-height: 560px;
 }
 
 #publisher object {
   width: 100%;
   position: relative;
+}
+
+div#myself{
+  height:202px;
 }
 
 .others {
@@ -105,7 +109,7 @@ span {
 
 .chat {
  height:175px;
- margin-top: 10px;
+ margin-top: 20px;
 }
 
 #chat-feed {
@@ -178,15 +182,14 @@ input {
 }
 
 #freshtag-input {
-  width: 65%;
+  width: 195px;
 }
 
 #freshtag-button {
-  width: 20%;
 }
 
 #chat-input {
-  width: 62%;
+  width: 424px;
 }
 
 #chat-media-button {
@@ -218,7 +221,6 @@ input {
 }
 
 #freshtag-form input[type="submit"] {
-  border-top: 0.75em solid black;
 }
 
 #top-bar {
@@ -257,4 +259,8 @@ input {
 
 #role-button.guest {
   color: green;
+}
+
+#top_btn{
+  float: right;
 }
