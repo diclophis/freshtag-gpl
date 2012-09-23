@@ -385,7 +385,8 @@ document.addEventListener("DOMContentLoaded", function () {
   var trendingLinks = document.getElementById("trends").getElementsByTagName("a");
   for (var i=0; i<trendingLinks.length; i++) {
     var a = trendingLinks[i];
-    a.href = hashTagUrl(a.rel);
-    a.innerHTML = convertTextToHashTag(a.rel);
+    var rel = a.getAttribute("data-hashtag");
+    a.href = hashTagUrl(rel);
+    a.innerHTML = convertTextToHashTag(rel);
   }
 });
