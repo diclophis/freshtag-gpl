@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   x = Math.floor((Math.random()*6)+1);
   document.getElementById("body").style.backgroundImage="url(../images/bg"+x+".jpg)"
 
+  /*
   var parameters = (function() {
     var oGetVars = {};
     if (window.location.search.length > 1) {
@@ -13,6 +14,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     return oGetVars;
   })();
+  */
+
+  var parameters = {
+    hashtag: window.location.pathname.split("/")[1]
+  };
  
   Chute.setApp('504d2f11cc72f836e3000001');
   var apiKey = 20179871;
@@ -52,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   var hashTagUrl = function(hashTag) {
-    return "?hashtag=" + convertTextToHashTag(hashTag);
+    return "/" + convertTextToHashTag(hashTag);
   };
 
   var relayoutStreamsForElementCount = function(length) {
@@ -85,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var getSession = function(gotSessionFunc) {
     var req = new XMLHttpRequest();
-    req.open("POST", "/session", true);
+    req.open("POST", "/api/session", true);
     req.onreadystatechange = function(e) {
       if (this.readyState == 4) {
         gotSessionFunc(req.responseText);
@@ -96,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var getToken = function(session, gotTokenFunc) {
     var req = new XMLHttpRequest();
-    req.open("POST", "/token/?session=" + session, true);
+    req.open("POST", "/api/token/?session=" + session, true);
     req.onreadystatechange = function(e) {
       if (this.readyState == 4) {
         gotTokenFunc(req.responseText);
@@ -262,7 +268,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var onGetSession = function(e) {
     e.preventDefault();
-    freshtagForm.onsubmit = null;
+    freshtagForm.onsubmit = function(e) {
+      e.preventDefault();
+      window.location = hashTagUrl(freshtagInput.value);
+      return false;
+    }
 
     document.body.className = "connected";
 

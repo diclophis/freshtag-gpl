@@ -51,7 +51,7 @@ builder = Rack::Builder.new do
     run default_resource
   end
 
-  map "/token" do
+  map "/api/token" do
     run Proc.new { |env| [
       200,
       {
@@ -62,7 +62,7 @@ builder = Rack::Builder.new do
     ]}
   end
 
-  map "/session" do
+  map "/api/session" do
     run Proc.new {[
       200,
       {
