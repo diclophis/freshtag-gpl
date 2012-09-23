@@ -42,6 +42,18 @@ document.addEventListener("DOMContentLoaded", function () {
     roomCountSpan.innerHTML = count;
   };
 
+  var convertTextToHashTag = function(text) {
+    text = text.replace(/\s/gi, "-");
+    text = text.replace(/\+/gi, "-");
+    text = text.replace(/[^-a-zA-Z0-9\-]+/ig, '');
+    //text = text.replace(/_/gi, "-");
+    return text.toLowerCase();
+  };
+
+  var hashTagUrl = function(hashTag) {
+    return "?hashtag=" + convertTextToHashTag(hashTag);
+  };
+
   var relayoutStreamsForElementCount = function(length) {
     if (length == 1) {
       streamsContainer.id = "single-stream";
@@ -215,18 +227,18 @@ document.addEventListener("DOMContentLoaded", function () {
             hashLoc++;
             continue;
           }
-          console.log(hashLoc, strippedBody.charAt(hashLoc - 1), '-');
           break;
         }
         var endOfHashLoc = strippedBody.indexOf(' ', hashLoc);
         if (endOfHashLoc == -1) {
           endOfHashLoc = strippedBody.length;
         }
-        var hash = strippedBody.substring(hashLoc + 1, endOfHashLoc);
+        var text = strippedBody.substring(hashLoc + 1, endOfHashLoc);
         var left = strippedBody.substring(0, hashLoc);
         var right = strippedBody.substring(endOfHashLoc, strippedBody.length);
-        var lowered = hash.toLowerCase();
-        var middle = "<a href=\"?hashtag=" + lowered + "\">&#35;" + hash + "</a>";
+        var hashTag = convertTextToHashTag(text);
+        var hashTagUrl = hashTagUrl(hashTag);
+        var middle = "<a href=\"" + hashTagUrl  + "\">&#35;" + hashTag + "</a>";
         strippedBody = left + middle + right;
       }
 
@@ -252,7 +264,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.body.className = "connected";
 
-    var hash = freshtagInput.value;
+    var hash = convertTextToHashTag(freshtagInput.value);
+    freshtagInput.value = hash;
+
+    if (!parameters.hashtag) {
+      window.history.pushState({"html":document.body.innerHTML,"pageTitle":window.title},"", hashTagUrl(hash));
+    }
+
     var namearr = hash.split("#"); // #topic -> ['', topic']
 
     var topic = namearr[namearr.length - 1]; // get last element from namearr
@@ -347,4 +365,11 @@ document.addEventListener("DOMContentLoaded", function () {
     freshtagButton.click();
   };
 
+
+  var trendingLinks = document.getElementById("trends").getElementsByTagName("a");
+  for (var i=0; i<trendingLinks.length; i++) {
+    var a = trendingLinks[i];
+    a.href = hashTagUrl(a.rel);
+    a.innerHTML = convertTextToHashTag(a.rel);
+  }
 });

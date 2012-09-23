@@ -245,7 +245,7 @@ input {
 #top-bar {
   height: 100%;
   position: fixed;
-  background: rgba(0, 0, 0, .9);
+  background: rgba(0, 0, 0, .5);
   z-index: 1;
   -moz-transition: all 0.66s;
   -webkit-transition: all 0.66s;
@@ -299,3 +299,6 @@ p:contains("special") {
   text-style: italic;
 }
 
+#trends {
+  overflow: hidden;
+}
