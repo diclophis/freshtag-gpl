@@ -26,11 +26,12 @@ end
 
 use Rack::ShowExceptions
 
-#use Rack::Static,
-use Rack::StaticCache,
+use Rack::Static,
+#use Rack::StaticCache,
   :urls => ["/javascripts", "/images", "/stylesheets"],
-  :duration => (500.0) / (60.0 * 60.0 * 24.0 * 365.0),
+  #:duration => (500.0) / (60.0 * 60.0 * 24.0 * 365.0),
   #:cache_control => 'public, must-revalidate, max-age=0, no-cache',
+  :cache_control => 'public, must-revalidate, max-age=500',
   :root => "public"
 
 
