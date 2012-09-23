@@ -4,8 +4,6 @@ require "opentok"
 require "rack/contrib"
 
 class TokBoxMiddleware
-
-  @@location = "freshtag.me"
   @@api_key = "20179871"
   @@api_secret = "120b9dcb30d979f5dde64625e053186524f4aefa"
   @@api_url = "https://api.opentok.com/hl"
@@ -13,7 +11,6 @@ class TokBoxMiddleware
   def self.session
     opentok = ::OpenTok::OpenTokSDK.new @@api_key, @@api_secret
     session_id = opentok.create_session
-    #@@location
     StringIO.new(session_id.to_s)
   end
 
@@ -24,17 +21,18 @@ class TokBoxMiddleware
     token_id = opentok.generate_token :session_id => session
     StringIO.new(token_id)
   end
-
 end
 
 
 use Rack::ShowExceptions
 
-#use Rack::StaticCache,
-use Rack::Static,
+#use Rack::Static,
+use Rack::StaticCache,
   :urls => ["/javascripts", "/images", "/stylesheets"],
-  :cache_control => 'public, must-revalidate, max-age=0, no-cache',
+  :duration => (60.0),
+  #:cache_control => 'public, must-revalidate, max-age=0, no-cache',
   :root => "public"
+
 
 default_resource = Proc.new { |env|
   [ 
