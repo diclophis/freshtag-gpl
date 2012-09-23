@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
+
+  x = Math.floor((Math.random()*6)+1);
+  document.getElementById("body").style.backgroundImage="url(../images/bg"+x+".jpg)"
+
   var parameters = (function() {
     var oGetVars = {};
     if (window.location.search.length > 1) {
