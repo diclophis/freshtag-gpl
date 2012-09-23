@@ -283,3 +283,8 @@ input {
 #top_btn{
   float: right;
 }
+
+p:contains("special") {
+  text-style: italic;
+}
+

@@ -9,8 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     return oGetVars;
   })();
-
-
  
   Chute.setApp('504d2f11cc72f836e3000001');
   var apiKey = 20179871;
@@ -28,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
   var freshtagForm = document.getElementById("freshtag-form");
   var freshtagButton = document.getElementById("freshtag-button");
   var roleButton = document.getElementById("role-button");
-
 
   var sessionDataRef = null;
   var chatDataRef = null;
@@ -90,28 +87,28 @@ document.addEventListener("DOMContentLoaded", function () {
     req.send();
   };
 
-    // Called when user wants to start publishing to the session
-    function startPublishing() {
-      if (!publisher) {
-        var parentDiv = document.getElementById("myself");
-        var publisherDiv = document.createElement('div');
-        var publisherDivDiv = document.createElement('div');
-        publisherDivDiv.setAttribute('id', "publisher-repl");
-        publisherDiv.setAttribute('id', 'publisher');
-        publisherDiv.appendChild(publisherDivDiv);
-        parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
-        publisher = session.publish(publisherDivDiv.id);
-        roleButton.className = "guest";
-        roleButton.innerHTML = "GUEST";
-      }
+  // Called when user wants to start publishing to the session
+  function startPublishing() {
+    if (!publisher) {
+      var parentDiv = document.getElementById("myself");
+      var publisherDiv = document.createElement('div');
+      var publisherDivDiv = document.createElement('div');
+      publisherDivDiv.setAttribute('id', "publisher-repl");
+      publisherDiv.setAttribute('id', 'publisher');
+      publisherDiv.appendChild(publisherDivDiv);
+      parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
+      publisher = session.publish(publisherDivDiv.id);
+      roleButton.className = "guest";
+      roleButton.innerHTML = "GUEST";
     }
+  }
 
-    function stopPublishing() {
-      if (publisher) {
-        session.unpublish(publisher);
-      }
-      publisher = null;
+  function stopPublishing() {
+    if (publisher) {
+      session.unpublish(publisher);
     }
+    publisher = null;
+  }
 
   var loadTokBox = function(sessionId, token) {
 
@@ -128,7 +125,6 @@ document.addEventListener("DOMContentLoaded", function () {
       session.addEventListener('streamDestroyed', streamDestroyedHandler);
       session.connect(apiKey, token);
     }
-
   
     function sessionConnectedHandler(event) {
       // Subscribe to all streams currently in the Session
@@ -201,7 +197,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (message.body != null) {
       var msgSpan = document.createElement("p");
-      msgSpan.innerHTML = htmlEntities(message.body);
+      var strippedBody = htmlEntities(message.body);
+
+      var hashLoc = 0;
+      var hashes = 0;
+      while(hashes++ < 10) {
+        hashLoc = strippedBody.indexOf("#", hashLoc);
+        var beforeHash = null;
+        beforeHash = strippedBody.charAt(hashLoc - 1);
+        if (hashLoc != 0 &&  beforeHash != ' ') {
+          if (beforeHash == '&') {
+            hashLoc++;
+            continue;
+          }
+          console.log(hashLoc, strippedBody.charAt(hashLoc - 1), '-');
+          break;
+        }
+        var endOfHashLoc = strippedBody.indexOf(' ', hashLoc);
+        if (endOfHashLoc == -1) {
+          endOfHashLoc = strippedBody.length;
+        }
+        var hash = strippedBody.substring(hashLoc + 1, endOfHashLoc);
+        var left = strippedBody.substring(0, hashLoc);
+        var right = strippedBody.substring(endOfHashLoc, strippedBody.length);
+        var lowered = hash.toLowerCase();
+        var middle = "<a href=\"?hashtag=" + lowered + "\">&#35;" + hash + "</a>";
+        strippedBody = left + middle + right;
+      }
+
+      msgSpan.innerHTML = strippedBody;
       li.appendChild(msgSpan);
     }
 
