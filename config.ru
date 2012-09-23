@@ -29,7 +29,7 @@ use Rack::ShowExceptions
 #use Rack::Static,
 use Rack::StaticCache,
   :urls => ["/javascripts", "/images", "/stylesheets"],
-  :duration => (60.0),
+  :duration => (60.0) / (60.0 * 60.0 * 24.0 * 365.0),
   #:cache_control => 'public, must-revalidate, max-age=0, no-cache',
   :root => "public"
 
