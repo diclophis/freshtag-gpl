@@ -55,7 +55,7 @@ top: 8px;
 
 .inset { text-shadow: 0 1px 0 #fff; }
 
-#golive-button{
+#role-button{
   margin: auto;
   display: block;
   position: relative;
@@ -284,17 +284,17 @@ margin-top: 16px;
 color: white;
 }
 
-#role-button {
+#role-span {
   color: white;
   font-family: 'edmondsans';
   font-weight: bold;
 }
 
-#role-button.lurk {
+#role-span.lurk {
   color: yellow;
 }
 
-#role-button.guest {
+#role-span.guest {
   color: #00B31B;
 }
 
@@ -302,17 +302,16 @@ color: white;
   float: right;
 }
 
-p:contains("special") {
-  text-style: italic;
-}
-
 #trends {
   overflow: hidden;
 }
 
 
-#trends ul{
-height: 249px;
-margin-left: 10px;
+#trends ul {
+  height: 249px;
+  margin-left: 10px;
 }
+
+#role-button.hidden {
+  display: none;
 }

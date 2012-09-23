@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var freshtagForm = document.getElementById("freshtag-form");
   var freshtagButton = document.getElementById("freshtag-button");
   var roleButton = document.getElementById("role-button");
+  var roleSpan = document.getElementById("role-span");
   var roomCountSpan = document.getElementById("room-count");
 
   var sessionDataRef = null;
@@ -115,8 +116,9 @@ document.addEventListener("DOMContentLoaded", function () {
       publisherDiv.appendChild(publisherDivDiv);
       parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
       publisher = session.publish(publisherDivDiv.id);
-      roleButton.className = "guest";
-      roleButton.innerHTML = "GUEST";
+      roleButton.className = "hidden";
+      roleSpan.className = "guest";
+      roleSpan.innerHTML = "GUEST";
     }
   }
 
@@ -360,11 +362,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   freshtagInput.focus();
   if (parameters.hashtag) {
-    console.log(parameters.hashtag);
     freshtagInput.value = parameters.hashtag;
     freshtagButton.click();
   };
-
 
   var trendingLinks = document.getElementById("trends").getElementsByTagName("a");
   for (var i=0; i<trendingLinks.length; i++) {
