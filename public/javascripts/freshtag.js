@@ -237,8 +237,8 @@ document.addEventListener("DOMContentLoaded", function () {
         var left = strippedBody.substring(0, hashLoc);
         var right = strippedBody.substring(endOfHashLoc, strippedBody.length);
         var hashTag = convertTextToHashTag(text);
-        var hashTagUrl = hashTagUrl(hashTag);
-        var middle = "<a href=\"" + hashTagUrl  + "\">&#35;" + hashTag + "</a>";
+        var urlForHashTag = hashTagUrl(hashTag);
+        var middle = "<a href=\"" + urlForHashTag  + "\">&#35;" + hashTag + "</a>";
         strippedBody = left + middle + right;
       }
 
