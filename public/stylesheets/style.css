@@ -49,11 +49,18 @@ a, a:hover, a:visited {
   margin-left: 0px !important;
   margin-right: 20px !important;
   font-size: 27px;
+  position: relative;
+top: 8px;
 }
 
 .inset { text-shadow: 0 1px 0 #fff; }
 
-
+#golive-button{
+  margin: auto;
+  display: block;
+  position: relative;
+  top:90px;
+}
 .stats {
   float: right !important;
   text-align: right;
@@ -136,7 +143,7 @@ div#myself{
 ul#posted_msgs li {
   margin-bottom: 1em;
   clear: left;
-  border-bottom: 1px solid #777;
+  border-bottom: 1px solid #ccc;
   padding-bottom: 5px;
 }
 
