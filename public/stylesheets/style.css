@@ -89,15 +89,15 @@ span {
 
 .top_left {
 background: rgba(0, 0, 0, .9);
--webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, .4);
-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, .4);
+-webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 1);
+box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 1);
 margin: 70px 0px 20px 0px;
 height: 249px;
 }
 .bottom_left {
 background: rgba(0, 0, 0, .9);
--webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, .4);
-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, .4);
+-webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 1);
+box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 1);
 margin: 10px 0px 0px 0px;
 height: 290px;
 }
@@ -115,8 +115,8 @@ div#myself{
    background: rgba(0, 0, 0, .9);
    height:350px;
    margin-top: 70px;
-   -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
-   box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
+   -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
+   box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
 }
 
 .chat {
@@ -127,8 +127,8 @@ div#myself{
 #chat-feed {
   height: 145px;
   background: rgba(255, 255, 255, .9);
-  -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
-  box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, .4);
+  -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
+  box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
   margin-bottom: 5px;
   overflow-y: scroll;
 }
@@ -200,7 +200,7 @@ input {
 }
 
 #freshtag-input {
-  width: 195px;
+  width: 184px;
 }
 
 #freshtag-button {
@@ -288,7 +288,7 @@ color: white;
 }
 
 #role-button.guest {
-  color: green;
+  color: #00B31B;
 }
 
 #top_btn{
