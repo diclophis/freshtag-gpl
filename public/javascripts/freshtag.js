@@ -1,4 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
+  var parameters = (function() {
+    var oGetVars = {};
+    if (window.location.search.length > 1) {
+      for (var aItKey, nKeyId = 0, aCouples = window.location.search.substr(1).split("&"); nKeyId < aCouples.length; nKeyId++) {
+        aItKey = aCouples[nKeyId].split("=");
+        oGetVars[unescape(aItKey[0])] = aItKey.length > 1 ? unescape(aItKey[1]) : "";
+      }
+    }
+    return oGetVars;
+  })();
+
+
  
   Chute.setApp('504d2f11cc72f836e3000001');
   var apiKey = 20179871;
@@ -13,9 +25,10 @@ document.addEventListener("DOMContentLoaded", function () {
   var chatMediaButton = document.getElementById("chat-media-button");
   var topBar = document.getElementById("top-bar");
   var freshtagInput = document.getElementById("freshtag-input");
+  var freshtagForm = document.getElementById("freshtag-form");
+  var freshtagButton = document.getElementById("freshtag-button");
   var roleButton = document.getElementById("role-button");
 
-  freshtagInput.focus();
 
   var sessionDataRef = null;
   var chatDataRef = null;
@@ -206,6 +219,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var onGetSession = function(e) {
     e.preventDefault();
+    freshtagForm.onsubmit = null;
 
     document.body.className = "connected";
 
@@ -271,7 +285,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  document.getElementById("freshtag-form").onsubmit = onGetSession;
+  freshtagForm.onsubmit = onGetSession;
 
   chatForm.onsubmit = function(e) {
     e.preventDefault();
@@ -296,18 +310,12 @@ document.addEventListener("DOMContentLoaded", function () {
   roleButton.onclick = function(e) {
     startPublishing();
   };
-});
 
-function onTrendData(data) {
-  var parent = document.getElementById("trends");
-  for (var loc = 0; loc < data.length; loc++) {
-    for (var i = 0; i < data[loc]["trends"].length; i++) {
-      var trend = document.createElement("div");
-      var anchor = document.createElement("a");
-      parent.appendChild(trend);
-      trend.appendChild(anchor);
-      anchor.href = data[loc]["trends"][i]["url"];
-      anchor.textContent = data[loc]["trends"][i]["name"];
-    }
-  }
-}
+  freshtagInput.focus();
+  if (parameters.hashtag) {
+    console.log(parameters.hashtag);
+    freshtagInput.value = parameters.hashtag;
+    freshtagButton.click();
+  };
+
+});
