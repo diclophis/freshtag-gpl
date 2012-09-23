@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var freshtagForm = document.getElementById("freshtag-form");
   var freshtagButton = document.getElementById("freshtag-button");
   var roleButton = document.getElementById("role-button");
+  var roomCountSpan = document.getElementById("room-count");
 
   var sessionDataRef = null;
   var chatDataRef = null;
@@ -38,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
   var subscribers = {};
 
   var updateRoomCount = function(count) {
-    // need a div to connect to
+    roomCountSpan.innerHTML = count;
   };
 
   var relayoutStreamsForElementCount = function(length) {
