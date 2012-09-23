@@ -268,6 +268,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var onGetSession = function(e) {
     e.preventDefault();
+
+    var hash = convertTextToHashTag(freshtagInput.value);
+
+    if (hash.length == 0) {
+      return false;
+    }
+
     freshtagForm.onsubmit = function(e) {
       e.preventDefault();
       window.location = hashTagUrl(freshtagInput.value);
@@ -276,7 +283,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.body.className = "connected";
 
-    var hash = convertTextToHashTag(freshtagInput.value);
     freshtagInput.value = hash;
 
     if (!parameters.hashtag) {
