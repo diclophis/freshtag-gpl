@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  x = Math.floor((Math.random()*6)+1);
+  x = Math.floor((Math.random()*13)+1);
   document.getElementById("body").style.backgroundImage="url(../images/bg"+x+".jpg)"
 
   /*
