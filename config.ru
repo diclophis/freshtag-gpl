@@ -23,8 +23,33 @@ class TokBoxMiddleware
   end
 end
 
+module Rack
+  class TripleDubRedirect
+    def initialize(app)
+      @app = app
+    end
+
+    def call(env)
+      request = Rack::Request.new(env)
+      if request.host.start_with?("www.")
+        [301, {
+          'Content-Type' => "text/plain",
+          "Location" => request.url.sub("//www.", "//")
+        }, self]
+      else
+        @app.call(env)
+      end
+    end
+
+    def each(&block)
+    end
+  end
+end
+
 
 use Rack::ShowExceptions
+
+use Rack::TripleDubRedirect
 
 use Rack::Static,
 #use Rack::StaticCache,
