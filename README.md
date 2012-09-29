@@ -5,7 +5,7 @@ freshtag is a project built for xhack2012.
 
 * Ben Daniel
 * Cody Byrnes
-* Perateek Gupta
+* Prateek Gupta
 * Jon Bardin http://risingcode.com
 
 HOW TO INSTALL
