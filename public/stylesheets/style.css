@@ -19,9 +19,10 @@
 body,ul,html { padding: 0; margin: 0; width: 100%; height: 100%; }
 li { list-style-type: none; }
 body {
-  background: url('../images/bg1.jpg') top left no-repeat;
+  background: top left no-repeat;
   background-size: cover;
   font-family: sans-serif;
+  background-color: black;
 }
 body > object {
   position: absolute;
@@ -231,6 +232,11 @@ input {
   -webkit-transition: all 1s;
 }
 
+.started-connected #live {
+  -moz-transition: none;
+  -webkit-transition: none;
+}
+
 .connected #live {
   opacity: 1;
 }
@@ -249,6 +255,15 @@ input {
   font-size: 10pt;
 }
 
+.connected #freshtag-form {
+  top: 0%;
+}
+
+.started-connected #freshtag-form {
+  -moz-transition: none;
+  -webkit-transition: none;
+}
+
 #top-bar {
   height: 100%;
   position: fixed;
@@ -259,6 +274,11 @@ input {
   width:100%;
 }
 
+.started-connected #top-bar {
+  -moz-transition: none;
+  -webkit-transition: none;
+}
+
 .connected #top-bar {
   height: 3.125em;
 }
@@ -267,8 +287,16 @@ input {
   height: 100%;
 }
 
-.connected #freshtag-form {
-  top: 0%;
+#featured-topics {
+  position: absolute;
+  top: 50%;
+  width: 32%;
+  margin: 0.25em 0 0 0.55em;
+  height: 100%;
+}
+
+.connected #featured-topics {
+  display: none;
 }
 
 #role {

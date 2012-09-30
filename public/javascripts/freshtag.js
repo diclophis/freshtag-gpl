@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-  x = Math.floor((Math.random()*13)+1);
-  document.getElementById("body").style.backgroundImage="url(../images/bg"+x+".jpg)"
 
   /*
   var parameters = (function() {
@@ -281,7 +279,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return false;
     }
 
-    document.body.className = "connected";
+    document.body.className += " connected";
 
     freshtagInput.value = hash;
 
@@ -378,6 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   freshtagInput.focus();
   if (parameters.hashtag) {
+    document.body.className = "started-connected";
     freshtagInput.value = parameters.hashtag;
     freshtagButton.click();
   };
