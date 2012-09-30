@@ -383,10 +383,26 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   var trendingLinks = document.getElementById("trends").getElementsByTagName("a");
+
+  setInterval(function() {
+    for (var i=1; i<trendingLinks.length; i++) {
+      var a = trendingLinks[i];
+      a.parentNode.className = "hidden";
+    }
+    for (var i=0; i<8; i++) {
+      var lr = (Math.random() * (trendingLinks.length));
+      var le = trendingLinks[parseInt(lr)].parentNode;
+      le.className = "show";
+    }
+  }, 30 * 1000);
+
   for (var i=0; i<trendingLinks.length; i++) {
     var a = trendingLinks[i];
     var rel = a.getAttribute("data-hashtag");
     a.href = hashTagUrl(rel);
     a.innerHTML = convertTextToHashTag(rel);
+    if (i > 10) {
+      a.parentNode.className = "hidden";
+    }
   }
 });

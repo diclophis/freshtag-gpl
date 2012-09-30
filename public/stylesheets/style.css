@@ -315,3 +315,21 @@ color: white;
 #role-button.hidden {
   display: none;
 }
+
+div#trends li {
+  -moz-transition: all 1.5s;
+  -webkit-transition: all 1.5s;
+  -moz-transform-origin: 0 0;
+}
+
+div#trends li.show {
+  -moz-transform: scale3d(1, 1, 1);
+  -webkit-transform: scale3d(1, 1, 1);
+  height: 1.5em;
+}
+
+div#trends li.hidden {
+  -moz-transform: scale3d(1, 0, 1);
+  -webkit-transform: scale3d(1, 0, 1);
+  height: 0;
+}
