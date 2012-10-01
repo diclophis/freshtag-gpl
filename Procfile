@@ -1,1 +1,1 @@
-web: bundle exec rainbows -c rainbows.rb -p $PORT
+web: bundle exec rackup -s thin -p $PORT
