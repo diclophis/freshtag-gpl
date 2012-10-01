@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var ts = Math.round(new Date().getTime() / 1000);
     ts -= 6;
 
-    chatDataRef.limit(10).on('child_added', function(snapshot) {
+    chatDataRef.limit(4).on('child_added', function(snapshot) {
       //We'll fill this in later.
       var message = snapshot.val();
       var newMessageLi = createMessageLi(message, message);
