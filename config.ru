@@ -3,6 +3,8 @@
 require "opentok"
 require "rack/contrib"
 
+$build = "1.0"
+
 class TokBoxMiddleware
   @@api_key = "20179871"
   @@api_secret = "120b9dcb30d979f5dde64625e053186524f4aefa"
@@ -31,6 +33,7 @@ module Rack
 
     def call(env)
       request = Rack::Request.new(env)
+      #env['HTTP_IF_NONE_MATCH'] = $build + request.url
       if request.host.start_with?("www.")
         [301, {
           'Content-Type' => "text/plain",
@@ -46,26 +49,24 @@ module Rack
   end
 end
 
+use Rack::TripleDubRedirect
+
+use Rack::ConditionalGet
 
 use Rack::ShowExceptions
 
-use Rack::TripleDubRedirect
-
-use Rack::Static,
-#use Rack::StaticCache,
+use Rack::StaticCache,
   :urls => ["/javascripts", "/images", "/stylesheets"],
-  #:duration => (500.0) / (60.0 * 60.0 * 24.0 * 365.0),
-  #:cache_control => 'public, must-revalidate, max-age=0, no-cache',
-  :cache_control => 'public, must-revalidate, max-age=500',
   :root => "public"
-
 
 default_resource = Proc.new { |env|
   [ 
     200,
     {
       'Content-Type' => "text/html",
-      "Cache-Control" => "public, must-revalidate, max-age=0"
+      "Connection" => "keep-alive",
+      "Cache-Control" => "public, must-revalidate, max-age=500",
+      "ETag" => $build
     },
     File.open("public/index.html")
   ]

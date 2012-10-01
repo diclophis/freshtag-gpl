@@ -404,20 +404,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  window.onpopstate = function(event) {
-    var going_to_hashtag = window.location.pathname.split("/")[1];
-    if (going_to_hashtag.length) {
-      window.history.replaceState(null, null, hashTagUrl(""));
-      freshtagForm.onsubmit = onGetSession;
-      freshtagInput.value = going_to_hashtag;
-      freshtagButton.click();
-    } else {
-      freshtagForm.reset();
-      document.body.className = "";
-    }
+  setTimeout(function() {
+    window.onpopstate = function(event) {
+      var going_to_hashtag = window.location.pathname.split("/")[1];
+      if (going_to_hashtag.length) {
+        window.history.replaceState(null, null, hashTagUrl(""));
+        freshtagForm.onsubmit = onGetSession;
+        freshtagInput.value = going_to_hashtag;
+        freshtagButton.click();
+      } else {
+        freshtagForm.reset();
+        document.body.className = "";
+      }
 
-    return;
+      return;
 
-  };
+    };
+  }, 2000);
 
 });
