@@ -390,4 +390,6 @@ input[type="submit"]:active, input[type="button"]:active{
 
 .about{
   color: white;
+  position: absolute;
+top: 40%;
 }
