@@ -48,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
     text = text.replace(/\s/gi, "-");
     text = text.replace(/\+/gi, "-");
     text = text.replace(/[^-a-zA-Z0-9\-]+/ig, '');
-    //text = text.replace(/_/gi, "-");
     return text.toLowerCase();
   };
 
@@ -315,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     var ts = Math.round(new Date().getTime() / 1000);
-    ts -= 60;
+    ts -= 6;
 
     chatDataRef.limit(10).on('child_added', function(snapshot) {
       //We'll fill this in later.
