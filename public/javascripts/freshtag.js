@@ -1,18 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+  if (allCookies.hasItem("gravatar")) {
+  } else {
+    allCookies.setItem("gravatar", Math.random());
+  }
 
-  /*
-  var parameters = (function() {
-    var oGetVars = {};
-    if (window.location.search.length > 1) {
-      for (var aItKey, nKeyId = 0, aCouples = window.location.search.substr(1).split("&"); nKeyId < aCouples.length; nKeyId++) {
-        aItKey = aCouples[nKeyId].split("=");
-        oGetVars[unescape(aItKey[0])] = aItKey.length > 1 ? unescape(aItKey[1]) : "";
-      }
-    }
-    return oGetVars;
-  })();
-  */
+  var gravatar = allCookies.getItem("gravatar");
+
+  var gravatar_url = "http://www.gravatar.com/avatar/" + gravatar + "?d=identicon";
 
   var parameters = {
     hashtag: window.location.pathname.split("/")[1]
@@ -216,6 +211,10 @@ document.addEventListener("DOMContentLoaded", function () {
       var img = document.createElement("img");
       img.setAttribute("src", "data:image/png;base64," + (message.imgData));
       li.appendChild(img);
+    } else if (message.imgUrl != null && message.imgUrl.length > 0) {
+      var img = document.createElement("img");
+      img.setAttribute("src", (message.imgUrl));
+      li.appendChild(img);
     }
 
     if (message.body != null) {
@@ -329,9 +328,11 @@ document.addEventListener("DOMContentLoaded", function () {
     var imgData = (publisher != null) ? publisher.getImgData() : null;
     var message = {
       imgData: imgData,
+      imgUrl: gravatar_url,
       body: null,
       chutUrls: null
     };
+    console.log(message);
     return message;
   };
 
@@ -409,4 +410,5 @@ document.addEventListener("DOMContentLoaded", function () {
     freshtagForm.reset();
     window.location.reload();
   };
+
 });
