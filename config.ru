@@ -57,8 +57,9 @@ use Rack::ShowExceptions
 
 use Rack::Deflater
 
-use Rack::StaticCache,
-  :urls => ["/javascripts", "/images", "/stylesheets"],
+use Rack::Static,
+  :urls => ["/javascripts", "/images", "/stylesheets", "/favicon.ico"],
+  :cache_control => 'public, max-age=500',
   :root => "public"
 
 default_resource = Proc.new { |env|
