@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+  var pushedState = false;
+
   if (allCookies.hasItem("gravatar")) {
   } else {
     allCookies.setItem("gravatar", Math.random());
@@ -7,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var gravatar = allCookies.getItem("gravatar");
 
-  var gravatar_url = "http://www.gravatar.com/avatar/" + gravatar + "?d=identicon";
+  var gravatar_url = "http://www.gravatar.com/avatar/" + (gravatar.replace(".", "")) + "?d=wavatar";
 
   var parameters = {
     hashtag: window.location.pathname.split("/")[1]
@@ -46,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function () {
     text = text.replace(/\s/gi, "-");
     text = text.replace(/\+/gi, "-");
     text = text.replace(/[^-a-zA-Z0-9\-]+/ig, '');
-    //text = text.replace(/_/gi, "-");
     return text.toLowerCase();
   };
 
@@ -283,7 +284,8 @@ document.addEventListener("DOMContentLoaded", function () {
     freshtagInput.value = hash;
 
     if (!parameters.hashtag) {
-      window.history.pushState({"html":document.body.innerHTML,"pageTitle":window.title},"", hashTagUrl(hash));
+      pushedState = true;
+      window.history.pushState(null, null, hashTagUrl(hash));
     }
 
     var namearr = hash.split("#"); // #topic -> ['', topic']
@@ -307,10 +309,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    var ts = Math.round(new Date().getTime() / 1000);
-    ts -= 60;
-
-    chatDataRef.limit(10).on('child_added', function(snapshot) {
+    chatDataRef.limit(3).on('child_added', function(snapshot) {
       //We'll fill this in later.
       var message = snapshot.val();
       var newMessageLi = createMessageLi(message, message);
@@ -332,7 +331,6 @@ document.addEventListener("DOMContentLoaded", function () {
       body: null,
       chutUrls: null
     };
-    console.log(message);
     return message;
   };
 
@@ -406,9 +404,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  window.onpopstate = function(event) {
-    freshtagForm.reset();
-    window.location.reload();
-  };
+  setTimeout(function() {
+    window.onpopstate = function(event) {
+      var going_to_hashtag = window.location.pathname.split("/")[1];
+      if (going_to_hashtag.length) {
+        window.history.replaceState(null, null, hashTagUrl(""));
+        freshtagForm.onsubmit = onGetSession;
+        freshtagInput.value = going_to_hashtag;
+        freshtagButton.click();
+      } else {
+        freshtagForm.reset();
+        document.body.className = "";
+      }
+
+      return;
+
+    };
+  }, 2000);
 
 });
