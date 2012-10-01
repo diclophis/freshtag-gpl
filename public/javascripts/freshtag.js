@@ -404,4 +404,9 @@ document.addEventListener("DOMContentLoaded", function () {
       a.parentNode.className = "hidden";
     }
   }
+
+  window.onpopstate = function(event) {
+    freshtagForm.reset();
+    window.location.reload();
+  };
 });
