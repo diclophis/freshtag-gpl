@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+  var pushedState = false;
+
   if (allCookies.hasItem("gravatar")) {
   } else {
     allCookies.setItem("gravatar", Math.random());
@@ -7,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var gravatar = allCookies.getItem("gravatar");
 
-  var gravatar_url = "http://www.gravatar.com/avatar/" + gravatar + "?d=identicon";
+  var gravatar_url = "http://www.gravatar.com/avatar/" + (gravatar.replace(".", "")) + "?d=wavatar";
 
   var parameters = {
     hashtag: window.location.pathname.split("/")[1]
@@ -283,7 +285,12 @@ document.addEventListener("DOMContentLoaded", function () {
     freshtagInput.value = hash;
 
     if (!parameters.hashtag) {
-      window.history.pushState({"html":document.body.innerHTML,"pageTitle":window.title},"", hashTagUrl(hash));
+      pushedState = true;
+      //window.history.pushState({"html":document.body.innerHTML,"pageTitle":window.title},"", hashTagUrl(hash));
+      window.history.pushState(null, null, hashTagUrl(hash));
+      //window.history.replaceState(null, null, hashTagUrl(hash));
+      //window.history.replaceState({"html":document.body.innerHTML,"pageTitle":window.title},"", hashTagUrl(hash));
+      //window.location.assign(hashTagUrl(hash));
     }
 
     var namearr = hash.split("#"); // #topic -> ['', topic']
@@ -332,7 +339,6 @@ document.addEventListener("DOMContentLoaded", function () {
       body: null,
       chutUrls: null
     };
-    console.log(message);
     return message;
   };
 
@@ -406,9 +412,23 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  var initialURL = location.href;
+  var oldV = null;
+
   window.onpopstate = function(event) {
-    freshtagForm.reset();
-    window.location.reload();
+    var going_to_hashtag = window.location.pathname.split("/")[1];
+    if (going_to_hashtag.length) {
+      window.history.replaceState(null, null, hashTagUrl(""));
+      freshtagForm.onsubmit = onGetSession;
+      freshtagInput.value = going_to_hashtag;
+      freshtagButton.click();
+    } else {
+      freshtagForm.reset();
+      document.body.className = "";
+    }
+
+    return;
+
   };
 
 });
