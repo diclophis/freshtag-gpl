@@ -285,11 +285,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!parameters.hashtag) {
       pushedState = true;
-      //window.history.pushState({"html":document.body.innerHTML,"pageTitle":window.title},"", hashTagUrl(hash));
       window.history.pushState(null, null, hashTagUrl(hash));
-      //window.history.replaceState(null, null, hashTagUrl(hash));
-      //window.history.replaceState({"html":document.body.innerHTML,"pageTitle":window.title},"", hashTagUrl(hash));
-      //window.location.assign(hashTagUrl(hash));
     }
 
     var namearr = hash.split("#"); // #topic -> ['', topic']
@@ -313,10 +309,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    var ts = Math.round(new Date().getTime() / 1000);
-    ts -= 6;
-
-    chatDataRef.limit(4).on('child_added', function(snapshot) {
+    chatDataRef.limit(3).on('child_added', function(snapshot) {
       //We'll fill this in later.
       var message = snapshot.val();
       var newMessageLi = createMessageLi(message, message);
@@ -410,9 +403,6 @@ document.addEventListener("DOMContentLoaded", function () {
       a.parentNode.className = "hidden";
     }
   }
-
-  var initialURL = location.href;
-  var oldV = null;
 
   window.onpopstate = function(event) {
     var going_to_hashtag = window.location.pathname.split("/")[1];
