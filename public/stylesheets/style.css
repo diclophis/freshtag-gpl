@@ -146,8 +146,7 @@ div#myself{
 ul#posted_msgs li {
   margin-bottom: 1em;
   clear: left;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
+  padding-bottom: 6px;
 }
 
 ul#posted_msgs li a{
