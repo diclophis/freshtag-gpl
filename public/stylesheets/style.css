@@ -248,7 +248,7 @@ input {
 
 #freshtag-form {
   position: absolute;
-  top: 50%;
+  top: 200px;
   width: 32%;
   margin: 0.25em 0 0 0.55em;
   height: 100%;
@@ -391,8 +391,8 @@ input[type="submit"]:active, input[type="button"]:active{
   width:55px;
 }
 
-#about {
+.about {
   color: white;
   position: absolute;
-  top: 40%;
+  top: 200px;
 }
