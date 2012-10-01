@@ -227,7 +227,7 @@ input {
   width: 13%;
 }
 
-.connected #about {
+.connected .about {
   display: none;
 }
 
