@@ -55,6 +55,8 @@ use Rack::ConditionalGet
 
 use Rack::ShowExceptions
 
+use Rack::Deflater
+
 use Rack::StaticCache,
   :urls => ["/javascripts", "/images", "/stylesheets"],
   :root => "public"
