@@ -3,7 +3,7 @@
 require "opentok"
 require "rack/contrib"
 
-$build = "1.1"
+$build = "1.2"
 
 class TokBoxMiddleware
   @@api_key = "20179871"
