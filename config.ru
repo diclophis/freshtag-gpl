@@ -51,7 +51,7 @@ end
 
 use Rack::TripleDubRedirect
 
-use Rack::ConditionalGet
+#use Rack::ConditionalGet
 
 use Rack::ShowExceptions
 
@@ -59,7 +59,7 @@ use Rack::Deflater
 
 use Rack::Static,
   :urls => ["/javascripts", "/images", "/stylesheets", "/favicon.ico"],
-  :cache_control => 'public, max-age=500',
+  :cache_control => 'public, must-revalidate, max-age=500',
   :root => "public"
 
 default_resource = Proc.new { |env|
@@ -68,8 +68,7 @@ default_resource = Proc.new { |env|
     {
       'Content-Type' => "text/html",
       "Connection" => "keep-alive",
-      "Cache-Control" => "public, must-revalidate, max-age=500",
-      "ETag" => $build
+      "Cache-Control" => "public, must-revalidate, max-age=0"
     },
     File.open("public/index.html")
   ]
