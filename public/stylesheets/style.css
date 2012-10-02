@@ -202,10 +202,13 @@ ul#posted_msgs li p {
 
 input {
   margin: 0;
-  padding: 0 1em 0 1em;
   border: 0px;
   border-spacing: 0;
   height: 40px;
+}
+
+#chat-input, #freshtag-input {
+  padding: 0 0 0 0.5em;
 }
 
 #freshtag-input {
@@ -216,7 +219,7 @@ input {
 }
 
 #chat-input {
-  width: 424px;
+  width: 445px;
 }
 
 #chat-media-button {
