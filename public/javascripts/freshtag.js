@@ -42,7 +42,7 @@ var createTrendingLinks = function() {
 };
 
 var onChuteMediaChooserChoose = function(urls, data) {
-  var message = createMessage(null, null);
+  var message = createMessage(this.publisher, this.gravatarUrl);
   message.chuteUrls = urls;
   pushMessage.apply(this, [message]);
 };
@@ -55,7 +55,7 @@ var onChatMediaButtonClick = function(e) {
 
 var onChatFormSubmit = function(e) {
   e.preventDefault();
-  var message = createMessage(null, null);
+  var message = createMessage(this.publisher, this.gravatarUrl);
   message.body = this.chatInput.value;
   pushMessage.apply(this, [message]);
   return false;
@@ -95,38 +95,34 @@ var onFreshtagFormSubmit = function(e) {
     return false;
   }
 
-  //freshtagForm.onsubmit = function(e) {
-  //  e.preventDefault();
-  //  window.location = hashTagUrl(freshtagInput.value);
-  //  return false;
-  //}
+  window.history.pushState(null, null, hashTagUrl(hash));
 
-  document.body.className += " connected";
-
-  this.freshtagInput.value = hash;
-
-  //if (!parameters.hashtag) {
-  //  pushedState = true;
-  //  window.history.pushState(null, null, hashTagUrl(hash));
-  //}
-
-  var namearr = hash.split("#"); // #topic -> ['', topic']
-
-  var topic = namearr[namearr.length - 1]; // get last element from namearr
-
-  this.chatDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/chat/' + topic);
-  this.chatDataRef.limit(3).on('child_added', onChatMessageChildAdded.bind(this));
-
-  this.sessionDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/session/' + topic);
-  this.sessionDataRef.on("value", onSessionValue.bind(this));
-
-  this.chatInput.focus();
+  connectToHashTag.apply(this, [hash]);
 
   return false;
 };
 
-var createMessage = function(imgData, gravatarUrl) {
-  //var imgData = (publisher != null) ? publisher.getImgData() : null;
+var connectToHashTag = function(hash) {
+  this.freshtagInput.value = hash;
+  this.freshtagForm.onsubmit = function(e) {
+    var newHash = this.freshtagInput.value;
+    this.freshtagForm.reset();
+    e.preventDefault();
+    window.location = hashTagUrl(newHash);
+    return false;
+  }.bind(this);
+  var namearr = hash.split("#"); // #topic -> ['', topic']
+  var topic = namearr[namearr.length - 1]; // get last element from namearr
+  this.chatDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/chat/' + topic);
+  this.chatDataRef.limit(3).on('child_added', onChatMessageChildAdded.bind(this));
+  this.sessionDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/session/' + topic);
+  this.sessionDataRef.on("value", onSessionValue.bind(this));
+  this.chatInput.focus();
+  document.body.className += " connected";
+};
+
+var createMessage = function(publisher, gravatarUrl) {
+  var imgData = (publisher != null) ? publisher.getImgData() : null;
   var message = {
     imgData: imgData,
     imgUrl: gravatarUrl,
@@ -245,7 +241,6 @@ var relayoutStreamsForElementCount = function(length) {
   updateRoomCount.apply(this, [length]);
 };
 
-
 var getToken = function(session, gotTokenFunc) {
   var req = new XMLHttpRequest();
   req.open("POST", "/api/token/?session=" + session, true);
@@ -264,29 +259,15 @@ var loadTokBox = function(token) {
   } else {
     TB.addEventListener("exception", tokboxExceptionHandler);
     this.session = TB.initSession(sessionId);
-
     this.session.addEventListener('sessionDisconnected', sessionDisconnectedHandler.bind(this));
-
-    //this.session.addEventListener('connectionCreated', connectionCreatedHandler);
-    //this.session.addEventListener('connectionDestroyed', connectionDestroyedHandler);
-
     this.session.addEventListener('sessionConnected', addsAllStreamsFromEventHandler.bind(this));
     this.session.addEventListener('streamCreated', addsAllStreamsFromEventHandler.bind(this));
     this.session.addEventListener('streamDestroyed', streamDestroyedHandler.bind(this));
-
+    //this.session.addEventListener('connectionCreated', connectionCreatedHandler);
+    //this.session.addEventListener('connectionDestroyed', connectionDestroyedHandler);
     this.session.connect(this.apiKey, token);
   }
 };
-
-//var sessionConnectedHandler = function(event) {
-//  // Subscribe to all streams currently in the Session
-//  for (var i = 0; i < event.streams.length; i++) {
-//    addStream.apply(this, [event.streams[i]]);
-//  }
-//  //if (allCookies.getItem("start-publishing-when-connected")) {
-//  //  startPublishing();
-//  //}
-//};
 
 var addsAllStreamsFromEventHandler = function(event) {
   // Subscribe to the newly created streams
@@ -307,16 +288,6 @@ var sessionDisconnectedHandler = function(event) {
   // will automatically be removed. This default behaviour can be prevented using event.preventDefault()
   this.publisher = null;
 };
-
-//var connectionDestroyedHandler = function(event) {
-//  // This signals that connections were destroyed
-//  console.log("connectionDestroyedHandler");
-//};
-
-//var connectionCreatedHandler = function(event) {
-//  // This signals new connections have been created.
-//  console.log("connectionCreatedHandler");
-//};
 
 var addStream = function(stream) {
   // Check if this is the stream that I am publishing, and if so do not publish.
@@ -393,45 +364,18 @@ document.addEventListener("DOMContentLoaded", function () {
     chatMediaButton: document.getElementById("chat-media-button"),
   };
 
-  //var pushedState = false;
-
   freshtag.freshtagForm.onsubmit = onFreshtagFormSubmit.bind(freshtag);
   freshtag.roleButton.onclick = onRoleButtonClick.bind(freshtag);
   freshtag.chatForm.onsubmit = onChatFormSubmit.bind(freshtag);
   freshtag.chatMediaButton.onclick = onChatMediaButtonClick.bind(freshtag);
   freshtag.freshtagInput.focus();
 
-  if (false) {
-    var parameters = {
-      hashtag: window.location.pathname.split("/")[1]
-    };
-    if (parameters.hashtag) {
-      document.body.className = "started-connected";
-      freshtagInput.value = parameters.hashtag;
-      freshtagButton.click();
-    };
+  var parameters = {
+    hashtag: window.location.pathname.split("/")[1]
+  };
+  if (parameters.hashtag) {
+    //TODO: figure out why this has to be in a timeout
+    document.body.className = "started-connected";
+    setTimeout(connectToHashTag.bind(freshtag), 500, parameters.hashtag);
   }
-
-  //TODO: figure out why this causes event doubling, for now just disable
-  /*
-  setTimeout(function() {
-    window.onpopstate = function(event) {
-      var going_to_hashtag = window.location.pathname.split("/")[1];
-      if (going_to_hashtag.length) {
-        window.history.replaceState(null, null, hashTagUrl(""));
-        freshtagForm.onsubmit = onGetSession;
-        freshtagInput.value = going_to_hashtag;
-        console.log("HERERE??????");
-        freshtagButton.click();
-      } else {
-        freshtagForm.reset();
-        document.body.className = "";
-      }
-
-      return;
-
-    };
-  }, 2000);
-  */
-
 });
