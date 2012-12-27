@@ -55,8 +55,6 @@ end
 
 use Rack::TripleDubRedirect
 
-#use Rack::ConditionalGet
-
 use Rack::ShowExceptions
 
 use Rack::Deflater
@@ -66,14 +64,17 @@ use Rack::Static,
   :cache_control => 'public, must-revalidate, max-age=500',
   :root => "public"
 
+def text_headers(type)
+  {
+    "Content-Type" => "text/" + type,
+    "Cache-Control" => "public, must-revalidate, max-age=0"
+  }
+end
+
 default_resource = Proc.new { |env|
   [ 
     200,
-    {
-      'Content-Type' => "text/html",
-      "Connection" => "keep-alive",
-      "Cache-Control" => "public, must-revalidate, max-age=0"
-    },
+    text_headers("html"),
     File.open("public/index.html")
   ]
 }
@@ -86,10 +87,7 @@ builder = Rack::Builder.new do
   map "/api/token" do
     run Proc.new { |env| [
       200,
-      {
-        'Content-Type' => "text/plain",
-        "Cache-Control" => "public, must-revalidate, max-age=0"
-      },
+      text_headers("plain"),
       TokBoxMiddleware.token(env)
     ]}
   end
@@ -97,10 +95,7 @@ builder = Rack::Builder.new do
   map "/api/session" do
     run Proc.new {[
       200,
-      {
-        'Content-Type' => "text/plain",
-        "Cache-Control" => "public, must-revalidate, max-age=0"
-      },
+      text_headers("plain"),
       TokBoxMiddleware.session
     ]}
   end
