@@ -71,13 +71,23 @@ def text_headers(type)
   }
 end
 
-default_resource = Proc.new { |env|
-  [ 
-    200,
-    text_headers("html"),
-    File.open("public/index.html")
-  ]
-}
+default_resource = Proc.new { |env| [
+  200,
+  text_headers("html"),
+  File.open("public/index.html")
+]}
+
+token_resource = Proc.new { |env| [
+  200,
+  text_headers("plain"),
+  TokBoxMiddleware.token(env)
+]}
+
+session_resource = Proc.new { |env| [
+  200,
+  text_headers("plain"),
+  TokBoxMiddleware.session
+]}
 
 builder = Rack::Builder.new do
   map "/" do
@@ -85,19 +95,11 @@ builder = Rack::Builder.new do
   end
 
   map "/api/token" do
-    run Proc.new { |env| [
-      200,
-      text_headers("plain"),
-      TokBoxMiddleware.token(env)
-    ]}
+    run token_resource
   end
 
   map "/api/session" do
-    run Proc.new {[
-      200,
-      text_headers("plain"),
-      TokBoxMiddleware.session
-    ]}
+    run session_resource
   end
 end
 
