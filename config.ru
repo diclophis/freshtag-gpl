@@ -10,9 +10,13 @@ class TokBoxMiddleware
   @@api_secret = "120b9dcb30d979f5dde64625e053186524f4aefa"
   @@api_url = "https://api.opentok.com/hl"
 
-  def self.session
+  def self.session(webrtc = false)
     opentok = ::OpenTok::OpenTokSDK.new @@api_key, @@api_secret
-    session_id = opentok.create_session
+    sessionProperties = {}
+    if webrtc
+      sessionProperties = {OpenTok::SessionPropertyConstants::P2P_PREFERENCE => "enabled"}
+    end
+    session_id = opentok.create_session(nil, sessionProperties)
     StringIO.new(session_id.to_s)
   end
 
