@@ -378,4 +378,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.className = "started-connected";
     setTimeout(connectToHashTag.bind(freshtag), 500, parameters.hashtag);
   }
+
+  x = Math.floor((Math.random()*12)+1);
+  document.getElementById("body").style.backgroundImage="url(../images/bg"+x+".jpg)";
+
 });

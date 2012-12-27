@@ -3,15 +3,14 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
     <title>freshtag.me</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" type="text/css" href="/stylesheets/style.css"/>
     <link rel="stylesheet" type="text/css" href="/stylesheets/960.css"/>
     <script src="http://static.firebase.com/v0/firebase.js"></script>
     <script src="http://static.opentok.com/v1.1/js/TB.min.js"></script>
+    <script src="/javascripts/media-chooser.min.js"></script>
     <script src="/javascripts/cookies.js"></script>
     <script src="/javascripts/freshtag.js"></script>
-    <link rel="icon" 
-      type="image/png" 
-      href="images/favicon.png">
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-35024733-1']);
@@ -27,9 +26,9 @@
      <div id="top-bar">
       <div class="container_12">
         <div class="grid_12">
-          <div id="logo" class="grid_4"><a href="./">
-              <img src="images/logo.png">
-          </a></div>
+          <div id="logo" class="grid_4">
+            <a href="./"><img src="images/logo.png" width="204" height="46" alt="logo"></a>
+          </div>
           <div class="grid_4">
           </div>
           <div class="grid_4" id="top_btn">
@@ -49,16 +48,12 @@
       <div id="live">
         <div id="left-col" class="grid_4">
           <div class="top_left">
-            <!--
-            <div class="heading_bar"> You </div>
-            -->
             <div id="myself">
-
-                <input type="submit" id="role-button" value="GO LIVE"/></div>
-            <div class="status">
-              <div id="roomNumber">Connected: <span id="room-count">0</span></div>
-              <div id="role">
-              MODE: <span class="lurk" id="role-span">OFF-AIR</span>
+              <input type="submit" id="role-button" value="GO LIVE"/></div>
+              <div class="status">
+                <div id="roomNumber">Connected: <span id="room-count">0</span></div>
+                <div id="role">
+                MODE: <span class="lurk" id="role-span">OFF-AIR</span>
               </div>
             </div>
           </div>
@@ -70,55 +65,17 @@
             <div id="trends">
               <ul>
                 <li class="show"><a data-hashtag="Demo2012"></a></li>
-                <li class="show"><a data-hashtag="Starwars"></a></li>
-                <li class="show"><a data-hashtag="Software"></a></li>
-                <li class="show"><a data-hashtag="Avengers"></a></li>
-                <li class="show"><a data-hashtag="Superman"></a></li>
-                <li class="show"><a data-hashtag="MilanFashion"></a></li>
-                <li class="show"><a data-hashtag="MoviesWeLove"></a></li>
-                <li class="show"><a data-hashtag="WhataboutiOS6"></a></li>
-                <li class="show"><a data-hashtag="HybridCars"></a></li>
-                <li class="show"><a data-hashtag="HappyHolidays"></a></li>
-                <li class="hidden"><a data-hashtag="HeyItsMyBirthday"></a></li>
-                <li class="hidden"><a data-hashtag="ShoppingOnline"></a></li>
-                <li class="hidden"><a data-hashtag="SnowFall"></a></li>
-                <li class="hidden"><a data-hashtag="AppleStore"></a></li>
-                <li class="hidden"><a data-hashtag="Windows8"></a></li>
-                <li class="hidden"><a data-hashtag="Walmart In India"></a></li>
-                <li class="hidden"><a data-hashtag="Photography"></a></li>
-                <li class="hidden"><a data-hashtag="NFLDrafts"></a></li>
-                <li class="hidden"><a data-hashtag="MakeUp"></a></li>
-                <li class="hidden"><a data-hashtag="MyCoffeeStrong"></a></li>
-                <li class="hidden"><a data-hashtag="Cricket-n-Indians"></a></li>
-                <li class="hidden"><a data-hashtag="ThingsWeSay"></a></li>
-                <li class="hidden"><a data-hashtag="SayWhat"></a></li>
-                <li class="hidden"><a data-hashtag="Pirates"></a></li>
-                <li class="hidden"><a data-hashtag="FreeSpirit"></a></li>
-                <li class="hidden"><a data-hashtag="MyCuteGirlFriend"></a></li>
-                <li class="hidden"><a data-hashtag="FamilyRecipes"></a></li>
-                <li class="hidden"><a data-hashtag="Milk n Cookies"></a></li>
-                <li class="hidden"><a data-hashtag="DarkNight"></a></li>
-                <li class="hidden"><a data-hashtag="Firefighters"></a></li>
-                <li class="hidden"><a data-hashtag="Smartphones"></a></li>
-                <li class="hidden"><a data-hashtag="TextsfromLastNight"></a></li>
-                <li class="hidden"><a data-hashtag="I am not drunk"></a></li>
               </ul>
             </div>
             <div class="trending_head">
               Featured Topics
             </div>
             <div id="featured_topics">
-                <ul>
-              <li>
-                <a href="/demo2012">#demo2012</a>
-              </li>
-              <li>
-                <a href="/freshtag">#freshtag</a>
-              </li>
-              <li>
-                <a href="/venturebeat">#venturebeat</a>
-              </li>
-            </ul>
+              <ul>
+                <li>
+                  <a href="/demo2012">#demo2012</a>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -142,10 +99,5 @@
         </div>
       </div>
     </div>
-    <script src="/javascripts/media-chooser.min.js"></script>
-    <script>
-      x = Math.floor((Math.random()*12)+1);
-      document.getElementById("body").style.backgroundImage="url(../images/bg"+x+".jpg)"
-    </script>
   </body>
 </html>
