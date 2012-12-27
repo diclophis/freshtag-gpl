@@ -1,3 +1,8 @@
+//TODO: remove these globals
+
+var tokboxExceptionHandler = function(event) {
+  console.log("Exception: " + event.code + "::" + event.message);
+};
 
 var createGravatarUrl = function() {
   if (allCookies.hasItem("gravatar")) {
@@ -8,385 +13,9 @@ var createGravatarUrl = function() {
   var gravatar = allCookies.getItem("gravatar");
 
   return "http://www.gravatar.com/avatar/" + (gravatar.replace(".", "")) + "?d=wavatar";
-}
+};
 
-document.addEventListener("DOMContentLoaded", function () {
-
-  var pushedState = false;
-
-  var gravatarUrl = createGravatarUrl();
-
-  var parameters = {
-    hashtag: window.location.pathname.split("/")[1]
-  };
- 
-  Chute.setApp('504d2f11cc72f836e3000001');
-  var apiKey = 20179871;
-  var session = null;
-
-  var dynamicToken = null;
-  var liveContainer = document.getElementById("live");
-  var streamsContainer = document.getElementById("streams").children[0];
-  var chatForm = document.getElementById("chat-form");
-  var chatInput = document.getElementById("chat-input");
-  var chatButton = document.getElementById("chat-button");
-  var chatMediaButton = document.getElementById("chat-media-button");
-  var topBar = document.getElementById("top-bar");
-  var freshtagInput = document.getElementById("freshtag-input");
-  var freshtagForm = document.getElementById("freshtag-form");
-  var freshtagButton = document.getElementById("freshtag-button");
-  var roleButton = document.getElementById("role-button");
-  var roleSpan = document.getElementById("role-span");
-  var roomCountSpan = document.getElementById("room-count");
-
-  var sessionDataRef = null;
-  var chatDataRef = null;
-  var messagesList = document.getElementById("posted_msgs");
-  var publisher = null;
-  var subscribers = {};
-
-  var updateRoomCount = function(count) {
-    roomCountSpan.innerHTML = count;
-  };
-
-  var convertTextToHashTag = function(text) {
-    text = text.replace(/\s/gi, "-");
-    text = text.replace(/\+/gi, "-");
-    text = text.replace(/[^-a-zA-Z0-9\-]+/ig, '');
-    return text.toLowerCase();
-  };
-
-  var hashTagUrl = function(hashTag) {
-    return "/" + convertTextToHashTag(hashTag);
-  };
-
-  var relayoutStreamsForElementCount = function(length) {
-    if (length == 1) {
-      streamsContainer.id = "single-stream";
-    } else if (length == 2) {
-      streamsContainer.id = "double-stream";
-    } else if (length <= 4) {
-      streamsContainer.id = "quad-stream";
-    } else if (length > 4 && length <= 6) {
-      streamsContainer.id = "six-stream";
-    } else if (length > 6 && length <= 9) {
-      streamsContainer.id = "nine-stream";
-    } else if (length > 9 && length <= 12) {
-      streamsContainer.id = "twelve-stream";
-    } else {
-      throw ("max video streams: " + length);
-    }
-
-    updateRoomCount(length);
-  };
-
-  var createNewStreamDiv = function() {
-    var length = (streamsContainer.children.length) + 1;
-    relayoutStreamsForElementCount(length);
-    var newStreamRepl = document.createElement('div');
-    streamsContainer.appendChild(newStreamRepl);
-    return newStreamRepl;
-  }
-
-  var getSession = function(gotSessionFunc) {
-    var req = new XMLHttpRequest();
-    req.open("POST", "/api/session", true);
-    req.onreadystatechange = function(e) {
-      if (this.readyState == 4) {
-        gotSessionFunc(req.responseText);
-      }
-    };
-    req.send();
-  };
-
-  var getToken = function(session, gotTokenFunc) {
-    var req = new XMLHttpRequest();
-    req.open("POST", "/api/token/?session=" + session, true);
-    req.onreadystatechange = function(e) {
-      if (this.readyState == 4) {
-        gotTokenFunc(req.responseText);
-      }
-    };
-    req.send();
-  };
-
-  // Called when user wants to start publishing to the session
-  function startPublishing() {
-    if (!publisher) {
-      var parentDiv = document.getElementById("myself");
-      var publisherDiv = document.createElement('div');
-      var publisherDivDiv = document.createElement('div');
-      publisherDivDiv.setAttribute('id', "publisher-repl");
-      publisherDiv.setAttribute('id', 'publisher');
-      publisherDiv.appendChild(publisherDivDiv);
-      parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
-      publisher = session.publish(publisherDivDiv.id);
-      roleButton.className = "hidden";
-      roleSpan.className = "guest";
-      roleSpan.innerHTML = "GUEST";
-    }
-  }
-
-  function stopPublishing() {
-    if (publisher) {
-      session.unpublish(publisher);
-    }
-    publisher = null;
-  }
-
-  var loadTokBox = function(sessionId, token) {
-
-    if (TB.checkSystemRequirements() != TB.HAS_REQUIREMENTS) {
-      alert("You don't have the minimum requirements to run this application." + "Please upgrade to the latest version of Flash.");
-    } else {
-      TB.addEventListener("exception", exceptionHandler);
-      session = TB.initSession(sessionId);
-      session.addEventListener('sessionConnected', sessionConnectedHandler);
-      session.addEventListener('sessionDisconnected', sessionDisconnectedHandler);
-      session.addEventListener('connectionCreated', connectionCreatedHandler);
-      session.addEventListener('connectionDestroyed', connectionDestroyedHandler);
-      session.addEventListener('streamCreated', streamCreatedHandler);
-      session.addEventListener('streamDestroyed', streamDestroyedHandler);
-      session.connect(apiKey, token);
-    }
-  
-    function sessionConnectedHandler(event) {
-      // Subscribe to all streams currently in the Session
-      for (var i = 0; i < event.streams.length; i++) {
-        addStream(event.streams[i]);
-      }
-      //if (allCookies.getItem("start-publishing-when-connected")) {
-      //  startPublishing();
-      //}
-    }
-
-    function streamCreatedHandler(event) {
-      // Subscribe to the newly created streams
-      for (var i = 0; i < event.streams.length; i++) {
-        addStream(event.streams[i]);
-      }
-    }
-
-    function streamDestroyedHandler(event) {
-      // This signals that a stream was destroyed. Any Subscribers will automatically be removed.
-      // This default behaviour can be prevented using event.preventDefault()
-      var length = (streamsContainer.children.length) - 1;
-      relayoutStreamsForElementCount(length);
-    }
-
-    function sessionDisconnectedHandler(event) {
-      // This signals that the user was disconnected from the Session. Any subscribers and publishers
-      // will automatically be removed. This default behaviour can be prevented using event.preventDefault()
-      publisher = null;
-    }
-
-    function connectionDestroyedHandler(event) {
-      // This signals that connections were destroyed
-      console.log("connectionDestroyedHandler");
-    }
-
-    function connectionCreatedHandler(event) {
-      // This signals new connections have been created.
-      console.log("connectionCreatedHandler");
-    }
-
-    function exceptionHandler(event) {
-      alert("Exception: " + event.code + "::" + event.message);
-    }
-
-    function addStream(stream) {
-      // Check if this is the stream that I am publishing, and if so do not publish.
-      if (stream.connection.connectionId == session.connection.connectionId) {
-        return;
-      }
-      var subscriberDiv = createNewStreamDiv();
-      subscriberDiv.setAttribute('id', stream.streamId);
-      subscribers[stream.streamId] = session.subscribe(stream, subscriberDiv.id);
-    }
-  };
-
-  function htmlEntities(str) {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
-  var createMessageLi = function(message) {
-    
-    var li = document.createElement("li");
-
-    if (message.imgData != null && message.imgData.length > 0) {
-      var img = document.createElement("img");
-      img.setAttribute("src", "data:image/png;base64," + (message.imgData));
-      li.appendChild(img);
-    } else if (message.imgUrl != null && message.imgUrl.length > 0) {
-      var img = document.createElement("img");
-      img.setAttribute("src", (message.imgUrl));
-      li.appendChild(img);
-    }
-
-    if (message.body != null) {
-      var msgSpan = document.createElement("p");
-      var strippedBody = htmlEntities(message.body);
-
-      var hashLoc = 0;
-      var hashes = 0;
-      while(hashes++ < 10) {
-        hashLoc = strippedBody.indexOf("#", hashLoc);
-        var beforeHash = null;
-        beforeHash = strippedBody.charAt(hashLoc - 1);
-        if (hashLoc != 0 &&  beforeHash != ' ') {
-          if (beforeHash == '&') {
-            hashLoc++;
-            continue;
-          }
-          break;
-        }
-        var endOfHashLoc = strippedBody.indexOf(' ', hashLoc);
-        if (endOfHashLoc == -1) {
-          endOfHashLoc = strippedBody.length;
-        }
-        var text = strippedBody.substring(hashLoc + 1, endOfHashLoc);
-        var left = strippedBody.substring(0, hashLoc);
-        var right = strippedBody.substring(endOfHashLoc, strippedBody.length);
-        var hashTag = convertTextToHashTag(text);
-        var urlForHashTag = hashTagUrl(hashTag);
-        var middle = "<a href=\"" + urlForHashTag  + "\">&#35;" + hashTag + "</a>";
-        strippedBody = left + middle + right;
-      }
-
-      msgSpan.innerHTML = strippedBody;
-      li.appendChild(msgSpan);
-    }
-
-    if (message.chuteUrls != null && message.chuteUrls.length > 0) {
-      for (var i=0; i<message.chuteUrls.length; i++) {
-        var url = message.chuteUrls[i];
-        var img = document.createElement("img");
-        img.src = Chute.fit(400, 300, url);
-        li.appendChild(img);
-      }
-    }
-
-    return li;
-  };
-
-  var onGetSession = function(e) {
-    e.preventDefault();
-
-    var hash = convertTextToHashTag(freshtagInput.value);
-
-    if (hash.length == 0) {
-      return false;
-    }
-
-    freshtagForm.onsubmit = function(e) {
-      e.preventDefault();
-      window.location = hashTagUrl(freshtagInput.value);
-      return false;
-    }
-
-    document.body.className += " connected";
-
-    freshtagInput.value = hash;
-
-    if (!parameters.hashtag) {
-      pushedState = true;
-      window.history.pushState(null, null, hashTagUrl(hash));
-    }
-
-    var namearr = hash.split("#"); // #topic -> ['', topic']
-
-    var topic = namearr[namearr.length - 1]; // get last element from namearr
-
-    //sessionDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/session/' + topic);
-    //chatDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/chat/' + topic);
-    sessionDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/session/' + topic);
-    chatDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/chat/' + topic);
-
-    sessionDataRef.on("value", function(snapshot) {
-      var foundSession = snapshot.val();
-      if (foundSession != null) {
-        getToken(foundSession, function(tokenFromRuby) {
-          loadTokBox(foundSession, tokenFromRuby);
-        });
-      } else {
-        // you got the lock
-        getSession(function(newSession) {
-          sessionDataRef.set(newSession);
-        });
-      }
-    });
-
-    chatDataRef.limit(3).on('child_added', function(snapshot) {
-      //We'll fill this in later.
-      var message = snapshot.val();
-      var newMessageLi = createMessageLi(message, message);
-      messagesList.appendChild(newMessageLi);
-      var chatFeed = document.getElementById("chat-feed");
-      chatFeed.scrollTop = chatFeed.scrollHeight;
-    });
-
-    chatInput.focus();
-
-    return false;
-  };
-
-  var createMessage = function() {
-    var imgData = (publisher != null) ? publisher.getImgData() : null;
-    var message = {
-      imgData: imgData,
-      imgUrl: gravatarUrl,
-      body: null,
-      chutUrls: null
-    };
-    return message;
-  };
-
-  var pushMessage = function(message) {
-    if (chatDataRef != null) {
-      chatInput.disabled = true;
-      chatButton.disabled = true;
-      chatDataRef.push(message, function() {
-        chatInput.value = "";
-        chatInput.disabled = false;
-        chatButton.disabled = false;
-        chatInput.focus();
-      });
-    }
-  };
-
-  freshtagForm.onsubmit = onGetSession;
-
-  chatForm.onsubmit = function(e) {
-    e.preventDefault();
-
-    var message = createMessage();
-    message.body = chatInput.value;
-    pushMessage(message);
-
-    return false;
-  };
-
-  chatMediaButton.onclick = function(e) {
-    e.preventDefault();
-    Chute.MediaChooser.choose(function(urls, data) {
-      var message = createMessage();
-      message.chuteUrls = urls;
-      pushMessage(message);
-    });
-    return false;
-  };
-
-  roleButton.onclick = function(e) {
-    startPublishing();
-  };
-
-  freshtagInput.focus();
-  if (parameters.hashtag) {
-    document.body.className = "started-connected";
-    freshtagInput.value = parameters.hashtag;
-    freshtagButton.click();
-  };
-
+var createTrendingLinks = function() {
   var trendingLinks = document.getElementById("trends").getElementsByTagName("a");
 
   setInterval(function() {
@@ -409,6 +38,378 @@ document.addEventListener("DOMContentLoaded", function () {
     if (i > 10) {
       a.parentNode.className = "hidden";
     }
+  }
+};
+
+var onChuteMediaChooserChoose = function(urls, data) {
+  var message = createMessage(null, null);
+  message.chuteUrls = urls;
+  pushMessage.apply(this, [message]);
+};
+
+var onChatMediaButtonClick = function(e) {
+  e.preventDefault();
+  Chute.MediaChooser.choose(onChuteMediaChooserChoose.bind(this));
+  return false;
+};
+
+var onChatFormSubmit = function(e) {
+  e.preventDefault();
+  var message = createMessage(null, null);
+  message.body = this.chatInput.value;
+  pushMessage.apply(this, [message]);
+  return false;
+};
+
+var getSession = function(gotSessionFunc) {
+  var req = new XMLHttpRequest();
+  req.open("POST", "/api/session", true);
+  req.onreadystatechange = function(e) {
+    if (this.readyState == 4) {
+      gotSessionFunc(req.responseText);
+    }
+  };
+  req.send();
+};
+
+var onSessionGot = function(newSession) {
+  this.sessionDataRef.set(newSession);
+};
+
+var onSessionValue = function(snapshot) {
+  this.foundSession = snapshot.val();
+  if (this.foundSession != null) {
+    getToken(this.foundSession, loadTokBox.bind(this));
+  } else {
+    // you got the lock
+    getSession(onSessionGot.bind(this));
+  }
+};
+
+var onFreshtagFormSubmit = function(e) {
+  e.preventDefault();
+
+  var hash = convertTextToHashTag(this.freshtagInput.value);
+
+  if (hash.length == 0) {
+    return false;
+  }
+
+  //freshtagForm.onsubmit = function(e) {
+  //  e.preventDefault();
+  //  window.location = hashTagUrl(freshtagInput.value);
+  //  return false;
+  //}
+
+  document.body.className += " connected";
+
+  this.freshtagInput.value = hash;
+
+  //if (!parameters.hashtag) {
+  //  pushedState = true;
+  //  window.history.pushState(null, null, hashTagUrl(hash));
+  //}
+
+  var namearr = hash.split("#"); // #topic -> ['', topic']
+
+  var topic = namearr[namearr.length - 1]; // get last element from namearr
+
+  this.chatDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/chat/' + topic);
+  this.chatDataRef.limit(3).on('child_added', onChatMessageChildAdded.bind(this));
+
+  this.sessionDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/session/' + topic);
+  this.sessionDataRef.on("value", onSessionValue.bind(this));
+
+  this.chatInput.focus();
+
+  return false;
+};
+
+var createMessage = function(imgData, gravatarUrl) {
+  //var imgData = (publisher != null) ? publisher.getImgData() : null;
+  var message = {
+    imgData: imgData,
+    imgUrl: gravatarUrl,
+    body: null,
+    chutUrls: null
+  };
+  return message;
+};
+
+var onPushMessage = function() {
+  this.chatInput.value = "";
+  this.chatInput.disabled = false;
+  this.chatButton.disabled = false;
+  this.chatInput.focus();
+};
+
+var pushMessage = function(message) {
+  if (this.chatDataRef != null) {
+    this.chatInput.disabled = true;
+    this.chatButton.disabled = true;
+    this.chatDataRef.push(message, onPushMessage.bind(this));
+  } else {
+    throw "this.chatDataRef is invalid";
+  }
+};
+
+var createMessageLi = function(message) {
+  var li = document.createElement("li");
+  if (message.imgData != null && message.imgData.length > 0) {
+    var img = document.createElement("img");
+    img.setAttribute("src", "data:image/png;base64," + (message.imgData));
+    li.appendChild(img);
+  } else if (message.imgUrl != null && message.imgUrl.length > 0) {
+    var img = document.createElement("img");
+    img.setAttribute("src", (message.imgUrl));
+    li.appendChild(img);
+  }
+  if (message.body != null) {
+    var msgSpan = document.createElement("p");
+    var strippedBody = htmlEntities(message.body);
+    var hashLoc = 0;
+    var hashes = 0;
+    while(hashes++ < 10) {
+      hashLoc = strippedBody.indexOf("#", hashLoc);
+      var beforeHash = null;
+      beforeHash = strippedBody.charAt(hashLoc - 1);
+      if (hashLoc != 0 &&  beforeHash != ' ') {
+        if (beforeHash == '&') {
+          hashLoc++;
+          continue;
+        }
+        break;
+      }
+      var endOfHashLoc = strippedBody.indexOf(' ', hashLoc);
+      if (endOfHashLoc == -1) {
+        endOfHashLoc = strippedBody.length;
+      }
+      var text = strippedBody.substring(hashLoc + 1, endOfHashLoc);
+      var left = strippedBody.substring(0, hashLoc);
+      var right = strippedBody.substring(endOfHashLoc, strippedBody.length);
+      var hashTag = convertTextToHashTag(text);
+      var urlForHashTag = hashTagUrl(hashTag);
+      var middle = "<a href=\"" + urlForHashTag  + "\">&#35;" + hashTag + "</a>";
+      strippedBody = left + middle + right;
+    }
+    msgSpan.innerHTML = strippedBody;
+    li.appendChild(msgSpan);
+  }
+  if (message.chuteUrls != null && message.chuteUrls.length > 0) {
+    for (var i=0; i<message.chuteUrls.length; i++) {
+      var url = message.chuteUrls[i];
+      var img = document.createElement("img");
+      img.src = Chute.fit(400, 300, url);
+      li.appendChild(img);
+    }
+  }
+  return li;
+};
+
+var htmlEntities = function(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+};
+
+var convertTextToHashTag = function(text) {
+  text = text.replace(/\s/gi, "-");
+  text = text.replace(/\+/gi, "-");
+  text = text.replace(/[^-a-zA-Z0-9\-]+/ig, '');
+  return text.toLowerCase();
+};
+
+var hashTagUrl = function(hashTag) {
+  return "/" + convertTextToHashTag(hashTag);
+};
+
+var updateRoomCount = function(count) {
+  this.roomCountSpan.innerHTML = count;
+};
+
+var relayoutStreamsForElementCount = function(length) {
+  if (length == 1) {
+    this.streamsContainer.id = "single-stream";
+  } else if (length == 2) {
+    this.streamsContainer.id = "double-stream";
+  } else if (length <= 4) {
+    this.streamsContainer.id = "quad-stream";
+  } else if (length > 4 && length <= 6) {
+    this.streamsContainer.id = "six-stream";
+  } else if (length > 6 && length <= 9) {
+    this.streamsContainer.id = "nine-stream";
+  } else if (length > 9 && length <= 12) {
+    this.streamsContainer.id = "twelve-stream";
+  } else {
+    throw ("max video streams: " + length);
+  }
+
+  updateRoomCount.apply(this, [length]);
+};
+
+
+var getToken = function(session, gotTokenFunc) {
+  var req = new XMLHttpRequest();
+  req.open("POST", "/api/token/?session=" + session, true);
+  req.onreadystatechange = function(e) {
+    if (this.readyState == 4) {
+      gotTokenFunc(req.responseText);
+    }
+  };
+  req.send();
+};
+
+var loadTokBox = function(token) {
+  var sessionId = this.foundSession; 
+  if (TB.checkSystemRequirements() != TB.HAS_REQUIREMENTS) {
+    alert("You don't have the minimum requirements to run this application." + "Please upgrade to the latest version of Flash.");
+  } else {
+    TB.addEventListener("exception", tokboxExceptionHandler);
+    this.session = TB.initSession(sessionId);
+
+    this.session.addEventListener('sessionDisconnected', sessionDisconnectedHandler.bind(this));
+
+    //this.session.addEventListener('connectionCreated', connectionCreatedHandler);
+    //this.session.addEventListener('connectionDestroyed', connectionDestroyedHandler);
+
+    this.session.addEventListener('sessionConnected', addsAllStreamsFromEventHandler.bind(this));
+    this.session.addEventListener('streamCreated', addsAllStreamsFromEventHandler.bind(this));
+    this.session.addEventListener('streamDestroyed', streamDestroyedHandler.bind(this));
+
+    this.session.connect(this.apiKey, token);
+  }
+};
+
+//var sessionConnectedHandler = function(event) {
+//  // Subscribe to all streams currently in the Session
+//  for (var i = 0; i < event.streams.length; i++) {
+//    addStream.apply(this, [event.streams[i]]);
+//  }
+//  //if (allCookies.getItem("start-publishing-when-connected")) {
+//  //  startPublishing();
+//  //}
+//};
+
+var addsAllStreamsFromEventHandler = function(event) {
+  // Subscribe to the newly created streams
+  for (var i = 0; i < event.streams.length; i++) {
+    addStream.apply(this, [event.streams[i]]);
+  }
+};
+
+var streamDestroyedHandler = function(event) {
+  // This signals that a stream was destroyed. Any Subscribers will automatically be removed.
+  // This default behaviour can be prevented using event.preventDefault()
+  var length = (this.streamsContainer.children.length) - 1;
+  relayoutStreamsForElementCount.apply(this, [length]);
+};
+
+var sessionDisconnectedHandler = function(event) {
+  // This signals that the user was disconnected from the Session. Any subscribers and publishers
+  // will automatically be removed. This default behaviour can be prevented using event.preventDefault()
+  this.publisher = null;
+};
+
+//var connectionDestroyedHandler = function(event) {
+//  // This signals that connections were destroyed
+//  console.log("connectionDestroyedHandler");
+//};
+
+//var connectionCreatedHandler = function(event) {
+//  // This signals new connections have been created.
+//  console.log("connectionCreatedHandler");
+//};
+
+var addStream = function(stream) {
+  // Check if this is the stream that I am publishing, and if so do not publish.
+  if (stream.connection.connectionId == this.session.connection.connectionId) {
+    return;
+  }
+  var length = (this.streamsContainer.children.length) + 1;
+  relayoutStreamsForElementCount.apply(this, [length]);
+  var subscriberDiv = document.createElement('div');
+  subscriberDiv.setAttribute('id', stream.streamId);
+  this.streamsContainer.appendChild(subscriberDiv);
+  this.subscribers[stream.streamId] = this.session.subscribe(stream, subscriberDiv.id);
+};
+
+var onChatMessageChildAdded = function(snapshot) {
+  //We'll fill this in later.
+  var message = snapshot.val();
+  var newMessageLi = createMessageLi(message, message);
+  this.messagesList.appendChild(newMessageLi);
+  var chatFeed = document.getElementById("chat-feed");
+  chatFeed.scrollTop = chatFeed.scrollHeight;
+};
+
+// Called when user wants to start publishing to the session
+var onRoleButtonClick = function(ev) {
+  ev.preventDefault();
+  if (!this.publisher) {
+    var parentDiv = this.myselfContainer;
+    var publisherDiv = document.createElement('div');
+    var publisherDivDiv = document.createElement('div');
+    publisherDivDiv.setAttribute('id', "publisher-repl");
+    publisherDiv.setAttribute('id', 'publisher');
+    publisherDiv.appendChild(publisherDivDiv);
+    parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
+    this.publisher = this.session.publish(publisherDivDiv.id);
+    this.roleButton.className = "hidden";
+    this.roleSpan.className = "guest";
+    this.roleSpan.innerHTML = "GUEST";
+  }
+  return false;
+};
+
+var stopPublishing = function() {
+  if (this.publisher) {
+    this.session.unpublish(this.publisher);
+  }
+  this.publisher = null;
+};
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  var freshtag = {
+    gravatarUrl: createGravatarUrl(),
+    subscribers: {},
+    chute: Chute.setApp('504d2f11cc72f836e3000001'),
+    apiKey: 20179871,
+    session: null,
+    foundSession: null,
+    publisher: null,
+    chatDataRef: null,
+    sessionDataRef: null,
+    myselfContainer: document.getElementById("myself"),
+    roleButton: document.getElementById("role-button"),
+    roleSpan: document.getElementById("role-span"),
+    freshtagForm: document.getElementById("freshtag-form"),
+    freshtagButton: document.getElementById("freshtag-button"),
+    freshtagInput: document.getElementById("freshtag-input"),
+    chatInput: document.getElementById("chat-input"),
+    chatButton: document.getElementById("chat-button"),
+    messagesList: document.getElementById("posted_msgs"),
+    streamsContainer: document.getElementById("streams").children[0],
+    roomCountSpan: document.getElementById("room-count"),
+    chatForm: document.getElementById("chat-form"),
+    chatMediaButton: document.getElementById("chat-media-button"),
+  };
+
+  //var pushedState = false;
+
+  freshtag.freshtagForm.onsubmit = onFreshtagFormSubmit.bind(freshtag);
+  freshtag.roleButton.onclick = onRoleButtonClick.bind(freshtag);
+  freshtag.chatForm.onsubmit = onChatFormSubmit.bind(freshtag);
+  freshtag.chatMediaButton.onclick = onChatMediaButtonClick.bind(freshtag);
+  freshtag.freshtagInput.focus();
+
+  if (false) {
+    var parameters = {
+      hashtag: window.location.pathname.split("/")[1]
+    };
+    if (parameters.hashtag) {
+      document.body.className = "started-connected";
+      freshtagInput.value = parameters.hashtag;
+      freshtagButton.click();
+    };
   }
 
   //TODO: figure out why this causes event doubling, for now just disable
