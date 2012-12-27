@@ -1,7 +1,5 @@
-document.addEventListener("DOMContentLoaded", function () {
 
-  var pushedState = false;
-
+var createGravatarUrl = function() {
   if (allCookies.hasItem("gravatar")) {
   } else {
     allCookies.setItem("gravatar", Math.random());
@@ -9,7 +7,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
   var gravatar = allCookies.getItem("gravatar");
 
-  var gravatar_url = "http://www.gravatar.com/avatar/" + (gravatar.replace(".", "")) + "?d=wavatar";
+  return "http://www.gravatar.com/avatar/" + (gravatar.replace(".", "")) + "?d=wavatar";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  var pushedState = false;
+
+  var gravatarUrl = createGravatarUrl();
 
   var parameters = {
     hashtag: window.location.pathname.split("/")[1]
@@ -150,9 +155,9 @@ document.addEventListener("DOMContentLoaded", function () {
       for (var i = 0; i < event.streams.length; i++) {
         addStream(event.streams[i]);
       }
-      if (allCookies.getItem("start-publishing-when-connected")) {
-        startPublishing();
-      }
+      //if (allCookies.getItem("start-publishing-when-connected")) {
+      //  startPublishing();
+      //}
     }
 
     function streamCreatedHandler(event) {
@@ -327,7 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var imgData = (publisher != null) ? publisher.getImgData() : null;
     var message = {
       imgData: imgData,
-      imgUrl: gravatar_url,
+      imgUrl: gravatarUrl,
       body: null,
       chutUrls: null
     };
@@ -404,6 +409,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  //TODO: figure out why this causes event doubling, for now just disable
+  /*
   setTimeout(function() {
     window.onpopstate = function(event) {
       var going_to_hashtag = window.location.pathname.split("/")[1];
@@ -411,6 +418,7 @@ document.addEventListener("DOMContentLoaded", function () {
         window.history.replaceState(null, null, hashTagUrl(""));
         freshtagForm.onsubmit = onGetSession;
         freshtagInput.value = going_to_hashtag;
+        console.log("HERERE??????");
         freshtagButton.click();
       } else {
         freshtagForm.reset();
@@ -421,5 +429,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     };
   }, 2000);
+  */
 
 });
