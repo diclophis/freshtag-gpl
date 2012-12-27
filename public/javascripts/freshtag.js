@@ -297,8 +297,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var topic = namearr[namearr.length - 1]; // get last element from namearr
 
-    sessionDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/session/' + topic);
-    chatDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/chat/' + topic);
+    //sessionDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/session/' + topic);
+    //chatDataRef = new Firebase('http://gamma.firebase.com/brickapp/freshtag/chat/' + topic);
+    sessionDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/session/' + topic);
+    chatDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/chat/' + topic);
 
     sessionDataRef.on("value", function(snapshot) {
       var foundSession = snapshot.val();
