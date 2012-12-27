@@ -5,7 +5,7 @@ GEM
     eventmachine (1.0.0)
     eventmachine (1.0.0-x86-mingw32)
     kgio (2.7.4)
-    opentok (0.0.91)
+    opentok (0.0.92)
     rack (1.4.1)
     rack-contrib (1.1.0)
       rack (>= 0.9.1)
@@ -28,7 +28,7 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
-  opentok
+  opentok (~> 0.0.92)
   rack
   rack-contrib
   rainbows
