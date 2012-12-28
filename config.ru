@@ -2,6 +2,8 @@
 
 require "opentok"
 require "rack/contrib"
+require "newrelic_rpm"
+require 'new_relic/rack/developer_mode'
 
 $build = "1.2"
 
@@ -37,7 +39,6 @@ module Rack
 
     def call(env)
       request = Rack::Request.new(env)
-      #env['HTTP_IF_NONE_MATCH'] = $build + request.url
       if request.host.start_with?("www.")
         [301, {
           'Content-Type' => "text/plain",
@@ -64,42 +65,64 @@ use Rack::Static,
   :cache_control => 'public, must-revalidate, max-age=500',
   :root => "public"
 
-def text_headers(type)
+use NewRelic::Rack::DeveloperMode
+
+NewRelic::Agent.manual_start
+
+class FreshTagResource
+  def text_headers(type)
   {
     "Content-Type" => "text/" + type,
     "Cache-Control" => "public, must-revalidate, max-age=0"
   }
+  end
 end
 
-default_resource = Proc.new { |env| [
-  200,
-  text_headers("html"),
-  File.open("public/index.html")
-]}
+class DefaultResource < FreshTagResource
+  PUBLIC_INDEX = File.open("public/index.html").readlines.join("\n")
+  def call(env)
+  [
+    200,
+    text_headers("html"),
+    PUBLIC_INDEX
+  ]
+  end
+  include NewRelic::Agent::Instrumentation::Rack
+end
 
-token_resource = Proc.new { |env| [
-  200,
-  text_headers("plain"),
-  TokBoxMiddleware.token(env)
-]}
+class TokenResource < FreshTagResource
+  def call(env)
+  [
+    200,
+    text_headers("plain"),
+    TokBoxMiddleware.token(env)
+  ]
+  end
+  include NewRelic::Agent::Instrumentation::Rack
+end
 
-session_resource = Proc.new { |env| [
-  200,
-  text_headers("plain"),
-  TokBoxMiddleware.session
-]}
+class SessionResource < FreshTagResource
+  def call(env)
+  [
+    200,
+    text_headers("plain"),
+    TokBoxMiddleware.session
+  ]
+  end
+  include NewRelic::Agent::Instrumentation::Rack
+end
 
 builder = Rack::Builder.new do
   map "/" do
-    run default_resource
+    run DefaultResource.new
   end
 
   map "/api/token" do
-    run token_resource
+    run TokenResource.new
   end
 
   map "/api/session" do
-    run session_resource
+    run SessionResource.new
   end
 end
 

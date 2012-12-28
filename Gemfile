@@ -5,3 +5,5 @@ gem "rack"
 gem "rack-contrib"
 gem "rainbows"
 gem "thin"
+gem "newrelic_rpm"
+
