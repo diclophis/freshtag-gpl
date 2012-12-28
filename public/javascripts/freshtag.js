@@ -376,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (parameters.hashtag) {
     //TODO: figure out why this has to be in a timeout
     document.body.className = "started-connected";
-    setTimeout(connectToHashTag.bind(freshtag), 500, parameters.hashtag);
+    setTimeout(connectToHashTag.bind(freshtag), 2000, parameters.hashtag);
   }
 
   x = Math.floor((Math.random()*12)+1);
