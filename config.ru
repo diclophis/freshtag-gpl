@@ -65,7 +65,7 @@ use Rack::Static,
   :cache_control => 'public, must-revalidate, max-age=500',
   :root => "public"
 
-use NewRelic::Rack::DeveloperMode
+#use NewRelic::Rack::DeveloperMode
 
 NewRelic::Agent.manual_start
 
