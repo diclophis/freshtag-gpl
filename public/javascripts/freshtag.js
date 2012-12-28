@@ -341,13 +341,9 @@ var stopPublishing = function() {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
-  //Chute.setApp('504d2f11cc72f836e3000001');
-  //console.log(fb.realtime.BrowserPollConnection);
-  //fb.realtime.BrowserPollConnection.isAvailable = function() { return false; };
-  //console.log(fb.realtime.BrowserPollConnection);
-
   var freshtag = {
     gravatarUrl: createGravatarUrl(),
+    chute: Chute.setApp('504d2f11cc72f836e3000001'),
     subscribers: {},
     apiKey: 20179871,
     session: null,
