@@ -79,7 +79,7 @@ class FreshTagResource
 end
 
 class DefaultResource < FreshTagResource
-  PUBLIC_INDEX = File.open("public/index.html").readlines.join("\n")
+  PUBLIC_INDEX = Array(File.open("public/index.html").readlines.join("\n"))
   def call(env)
   [
     200,
