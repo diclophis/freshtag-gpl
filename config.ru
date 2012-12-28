@@ -61,7 +61,7 @@ use Rack::ShowExceptions
 use Rack::Deflater
 
 use Rack::Static,
-  :urls => ["/javascripts", "/images", "/stylesheets", "/favicon.ico"],
+  :urls => ["/javascripts", "/images", "/stylesheets", "/favicon.ico", "/deps.js"],
   :cache_control => 'public, must-revalidate, max-age=500',
   :root => "public"
 

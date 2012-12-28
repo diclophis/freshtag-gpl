@@ -113,9 +113,12 @@ var connectToHashTag = function(hash) {
   }.bind(this);
   var namearr = hash.split("#"); // #topic -> ['', topic']
   var topic = namearr[namearr.length - 1]; // get last element from namearr
+  //TODO: this is going to break sometime, so fix it later
+  fb.realtime.BrowserPollConnection.isAvailable = function() { return false; };
+  //Firebase.enableLogging(true);
   this.chatDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/chat/' + topic);
   this.chatDataRef.limit(3).on('child_added', onChatMessageChildAdded.bind(this));
-  this.sessionDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/session/' + topic);
+  this.sessionDataRef = new Firebase('http://freshtag-dev.firebaseio.com/brickapp/freshtag/session/' + topic);
   this.sessionDataRef.on("value", onSessionValue.bind(this));
   this.chatInput.focus();
   document.body.className += " connected";
@@ -338,11 +341,14 @@ var stopPublishing = function() {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
+  //Chute.setApp('504d2f11cc72f836e3000001');
+  //console.log(fb.realtime.BrowserPollConnection);
+  //fb.realtime.BrowserPollConnection.isAvailable = function() { return false; };
+  //console.log(fb.realtime.BrowserPollConnection);
 
   var freshtag = {
     gravatarUrl: createGravatarUrl(),
     subscribers: {},
-    chute: Chute.setApp('504d2f11cc72f836e3000001'),
     apiKey: 20179871,
     session: null,
     foundSession: null,
@@ -374,12 +380,13 @@ document.addEventListener("DOMContentLoaded", function () {
     hashtag: window.location.pathname.split("/")[1]
   };
   if (parameters.hashtag) {
-    //TODO: figure out why this has to be in a timeout
-    document.body.className = "started-connected";
-    setTimeout(connectToHashTag.bind(freshtag), 2000, parameters.hashtag);
+    //document.body.className = "started-connected";
+    freshtag.freshtagInput.value = parameters.hashtag;
+    freshtag.freshtagButton.click();
   }
 
   x = Math.floor((Math.random()*12)+1);
   document.getElementById("body").style.backgroundImage="url(../images/bg"+x+".jpg)";
 
 });
+//};
