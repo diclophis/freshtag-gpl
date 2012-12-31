@@ -83,7 +83,8 @@ left: -3px;
 
 .status {
 font-size: 14px;
-margin-top: 12px;
+position: relative;
+top: 12px;
 }
 
 .green {
