@@ -61,7 +61,7 @@ left: -4px;
 #role-button{
   display: block;
   position: relative;
-  top: 25px;
+  top: 270px;
   width: 100%;
 }
 .stats {
@@ -349,6 +349,8 @@ left: 32px;
 #trends ul, #featured_topics ul {
   width: 800px;
   float: right;
+  position: relative;
+top: 17px;
 }
 
 #role-button.hidden {
