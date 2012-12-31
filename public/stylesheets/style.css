@@ -151,6 +151,9 @@ ul#posted_msgs li {
   margin-bottom: 20px;
   clear: left;
   padding-bottom: 6px;
+  min-height: 68px;
+border-bottom: 1px solid #555;
+border-top: 1px solid #eee;
 }
 
 ul#posted_msgs li a{
@@ -418,6 +421,23 @@ text-align: center;
 font-weight: bold;
 font-size: 35px;
 color: white;
+}
+
+.copyright{
+  text-align: center;
+color: white;
+margin-top: 34px;
+background-color: rgba(0, 0, 0, .9);
+height: 40px;
+padding-top: 10px;
+}
+
+.copyright a{
+  color:rgba(51, 204, 204, 1);
+}
+
+.copyright a:hover{
+  text-decoration: underline;
 }
 
 @-moz-document url-prefix() {
