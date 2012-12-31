@@ -14,10 +14,12 @@ class TokBoxMiddleware
   @@api_secret = "120b9dcb30d979f5dde64625e053186524f4aefa"
   @@api_url = "https://api.opentok.com/hl"
 
-  def self.session(webrtc = false)
+  def self.session(env)
+    req = Rack::Request.new(env)
+    webrtc = req.params["webrtc"]
     opentok = ::OpenTok::OpenTokSDK.new @@api_key, @@api_secret
     sessionProperties = {}
-    if webrtc
+    if webrtc == "true"
       sessionProperties = {OpenTok::SessionPropertyConstants::P2P_PREFERENCE => "enabled"}
     end
     session_id = opentok.create_session(nil, sessionProperties)
@@ -108,7 +110,7 @@ class SessionResource < FreshTagResource
   [
     200,
     text_headers("plain"),
-    TokBoxMiddleware.session
+    TokBoxMiddleware.session(env)
   ]
   end
   include NewRelic::Agent::Instrumentation::Rack

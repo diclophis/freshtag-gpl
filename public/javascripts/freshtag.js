@@ -1,7 +1,8 @@
-//TODO: remove these globals
+// All code
 
 var tokboxExceptionHandler = function(event) {
   console.log("Exception: " + event.code + "::" + event.message);
+  console.log(event, this);
 };
 
 var createGravatarUrl = function() {
@@ -61,9 +62,9 @@ var onChatFormSubmit = function(e) {
   return false;
 };
 
-var getSession = function(gotSessionFunc) {
+var getSession = function(webrtc, gotSessionFunc) {
   var req = new XMLHttpRequest();
-  req.open("POST", "/api/session", true);
+  req.open("POST", "/api/session?webrtc=" + webrtc, true);
   req.onreadystatechange = function(e) {
     if (this.readyState == 4) {
       gotSessionFunc(req.responseText);
@@ -82,7 +83,7 @@ var onSessionValue = function(snapshot) {
     getToken(this.foundSession, loadTokBox.bind(this));
   } else {
     // you got the lock
-    getSession(onSessionGot.bind(this));
+    getSession(this.webrtc, onSessionGot.bind(this));
   }
 };
 
@@ -116,6 +117,9 @@ var connectToHashTag = function(hash) {
   //TODO: this is going to break sometime, so fix it later
   fb.realtime.BrowserPollConnection.isAvailable = function() { return false; };
   //Firebase.enableLogging(true);
+  if (this.webrtc) {
+    topic += "-webrtc";
+  }
   this.chatDataRef = new Firebase('http://freshtag-dev.firebaseIO.com/brickapp/freshtag/chat/' + topic);
   this.chatDataRef.limit(3).on('child_added', onChatMessageChildAdded.bind(this));
   this.sessionDataRef = new Firebase('http://freshtag-dev.firebaseio.com/brickapp/freshtag/session/' + topic);
@@ -256,20 +260,35 @@ var getToken = function(session, gotTokenFunc) {
 };
 
 var loadTokBox = function(token) {
-  var sessionId = this.foundSession; 
-  if (TB.checkSystemRequirements() != TB.HAS_REQUIREMENTS) {
-    alert("You don't have the minimum requirements to run this application." + "Please upgrade to the latest version of Flash.");
-  } else {
-    TB.addEventListener("exception", tokboxExceptionHandler);
-    this.session = TB.initSession(sessionId);
-    this.session.addEventListener('sessionDisconnected', sessionDisconnectedHandler.bind(this));
-    this.session.addEventListener('sessionConnected', addsAllStreamsFromEventHandler.bind(this));
-    this.session.addEventListener('streamCreated', addsAllStreamsFromEventHandler.bind(this));
-    this.session.addEventListener('streamDestroyed', streamDestroyedHandler.bind(this));
-    //this.session.addEventListener('connectionCreated', connectionCreatedHandler);
-    //this.session.addEventListener('connectionDestroyed', connectionDestroyedHandler);
-    this.session.connect(this.apiKey, token);
+  var tokbox_loaded = function() {
+    var sessionId = this.foundSession; 
+    if (TB.checkSystemRequirements() != TB.HAS_REQUIREMENTS) {
+      alert("You don't have the minimum requirements to run this application." + "Please upgrade to the latest version of Flash.");
+    } else {
+      TB.addEventListener("exception", tokboxExceptionHandler);
+      this.session = TB.initSession(sessionId);
+      this.session.addEventListener('sessionDisconnected', sessionDisconnectedHandler.bind(this));
+      this.session.addEventListener('sessionConnected', addsAllStreamsFromEventHandler.bind(this));
+      this.session.addEventListener('streamCreated', addsAllStreamsFromEventHandler.bind(this));
+      this.session.addEventListener('streamDestroyed', streamDestroyedHandler.bind(this));
+      //this.session.addEventListener('connectionCreated', connectionCreatedHandler);
+      //this.session.addEventListener('connectionDestroyed', connectionDestroyedHandler);
+      this.session.connect(this.apiKey, token);
+    }
   }
+
+  var tokbox_script_url = "http://static.opentok.com/v1.1/js/TB.min.js";
+  if (this.webrtc) {
+    tokbox_script_url = "http://static.opentok.com/webrtc/v2.0/js/TB.min.js";
+  }
+
+  var tb = document.createElement('script');
+  tb.onload = tokbox_loaded.bind(this);
+  tb.type = 'text/javascript';
+  tb.src = tokbox_script_url;
+  var head = document.getElementsByTagName('head')[0];
+  head.appendChild(tb);
+
 };
 
 var addsAllStreamsFromEventHandler = function(event) {
@@ -364,6 +383,7 @@ document.addEventListener("DOMContentLoaded", function () {
     roomCountSpan: document.getElementById("room-count"),
     chatForm: document.getElementById("chat-form"),
     chatMediaButton: document.getElementById("chat-media-button"),
+    webrtc: window.location.host.indexOf("rtc") != -1,
   };
 
   freshtag.freshtagForm.onsubmit = onFreshtagFormSubmit.bind(freshtag);
