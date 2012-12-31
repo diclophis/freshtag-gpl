@@ -83,6 +83,7 @@ left: -3px;
 
 .status {
 font-size: 14px;
+margin-top: 12px;
 }
 
 .green {
@@ -417,4 +418,11 @@ text-align: center;
 font-weight: bold;
 font-size: 35px;
 color: white;
+}
+
+@-moz-document url-prefix() {
+  #freshtag-button, #chat-media-button, #chat-button{
+    position: relative;
+    top:1px;
+  }
 }
