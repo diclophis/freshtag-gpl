@@ -53,17 +53,23 @@ top: 2px;
 }
 #logo a {
 position: relative;
-left: -4px;
+left: -3px;
 }
 
 .inset { text-shadow: 0 1px 0 #fff; }
 
-#role-button{
+#role-button, .share_buttons{
   display: block;
   position: relative;
-  top: 270px;
+  top: 268px;
   width: 100%;
 }
+
+.share_buttons{
+  width: 50% !important;
+  float: left;
+}
+
 .stats {
   float: right !important;
   text-align: right;
@@ -214,7 +220,7 @@ input {
 }
 
 #freshtag-button {
-    width: 77px;
+    width: 76px;
 }
 
 #chat-input {
@@ -252,7 +258,7 @@ input {
   position: absolute;
   top: 200px;
   width: 300px;
-  margin: 0.25em 0 0 0.55em;
+  margin: 5px 0 0 0.55em;
   height: 100%;
   -moz-transition: all 0.66s;
   -webkit-transition: all 0.66s;
