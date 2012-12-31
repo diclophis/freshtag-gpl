@@ -30,7 +30,7 @@ a, a:visited {
   text-decoration: none;
 }
 a:hover {
-  color:#33cccc;
+  color: #000;
 }
 .streams-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
 .streams-container > object { padding: 0; margin: 0; -moz-transition: all 5s; -webkit-transition: all 5s; position: relative; float: left; background-color: rgba(32, 32, 32, 0.2); }
@@ -51,14 +51,18 @@ a:hover {
   position: relative;
 top: 2px;
 }
+#logo a {
+position: relative;
+left: -4px;
+}
 
 .inset { text-shadow: 0 1px 0 #fff; }
 
 #role-button{
-  margin: auto;
   display: block;
   position: relative;
-  top:90px;
+  top: 25px;
+  width: 100%;
 }
 .stats {
   float: right !important;
@@ -99,17 +103,14 @@ span {
 
 .top_left {
 background: rgba(0, 0, 0, .9);
--webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 1);
-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 1);
-margin: 70px 0px 20px 0px;
-height: 290px;
+margin: 20px 0px 0px 0px;
+height: 348px;
 }
 .bottom_left {
-background: rgba(0, 0, 0, .9);
--webkit-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 1);
-box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 1);
-margin: 10px 0px 0px 0px;
-height: 291px;
+background: rgba(51, 204, 204, .9);
+margin: 51px auto 0px auto;
+height: 50px;
+width: 940px;
 }
 
 #publisher object {
@@ -123,10 +124,8 @@ div#myself{
 
 .others {
    background: rgba(0, 0, 0, .9);
-   height:390px;
-   margin-top: 70px;
-   -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
-   box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
+   height:350px;
+   margin-top: 20px;
 }
 
 .chat {
@@ -136,15 +135,13 @@ div#myself{
 
 #chat-feed {
   height: 145px;
-  background: rgba(255, 255, 255, .9);
-  -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
-  box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
+  background: rgba(255, 255, 255, 1);
   margin-bottom: 5px;
   overflow-y: scroll;
 }
 
 ul#posted_msgs li {
-  margin-bottom: 1em;
+  margin-bottom: 20px;
   clear: left;
   padding-bottom: 6px;
 }
@@ -195,9 +192,10 @@ ul#posted_msgs li p {
 .trending_head {
   font-family: 'proximaNova';
   font-weight: bold;
-  padding: 12px 0px 5px 5px;
+  padding: 16px 0px 5px 5px;
   font-size: 18px;
   color: #fff;
+  float: left;
 }
 
 input {
@@ -216,10 +214,11 @@ input {
 }
 
 #freshtag-button {
+    width: 77px;
 }
 
 #chat-input {
-  width: 445px;
+  width: 681px;
 }
 
 #chat-media-button {
@@ -252,7 +251,7 @@ input {
 #freshtag-form {
   position: absolute;
   top: 200px;
-  width: 32%;
+  width: 300px;
   margin: 0.25em 0 0 0.55em;
   height: 100%;
   -moz-transition: all 0.66s;
@@ -260,7 +259,7 @@ input {
 }
 
 #freshtag-form input[type="submit"] {
-  font-size: 10pt;
+  font-size: 8pt;
 }
 
 .connected #freshtag-form {
@@ -289,6 +288,8 @@ input {
 
 .connected #top-bar {
   height: 3.125em;
+    -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
+  box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
 }
 
 #top-bar .grid_12, #top-bar .grid_12 .grid_4 {
@@ -336,6 +337,8 @@ color: white;
 
 #top_btn{
   float: right;
+  position: relative;
+left: 32px;
 }
 
 #trends {
@@ -344,8 +347,8 @@ color: white;
 
 
 #trends ul, #featured_topics ul {
-  height: 115px;
-  margin-left: 10px;
+  width: 800px;
+  float: right;
 }
 
 #role-button.hidden {
@@ -372,7 +375,7 @@ div#trends li.hidden {
 
 
 input[type="submit"]:hover, input[type="button"]:hover{
-  background-color: #3cc !important;
+  background-color: #3CC !important;
 }
 input[type="submit"]:active, input[type="button"]:active{
   color:green !important;
@@ -397,7 +400,7 @@ input[type="submit"]:active, input[type="button"]:active{
 .about {
   color: white;
   position: absolute;
-  top: 200px;
+  top: 178px;
 }
 .heading_bar {
 height: 40px;
