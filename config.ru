@@ -5,6 +5,8 @@ require "rack/contrib"
 require "newrelic_rpm"
 require 'new_relic/rack/developer_mode'
 
+Rack::Mime::MIME_TYPES[""] = "text/html" #default missing exentions to text/html
+
 $build = "1.2"
 
 class TokBoxMiddleware
@@ -61,7 +63,7 @@ use Rack::ShowExceptions
 use Rack::Deflater
 
 use Rack::Static,
-  :urls => ["/javascripts", "/images", "/stylesheets", "/favicon.ico", "/deps.js"],
+  :urls => ["/javascripts", "/images", "/stylesheets", "/favicon.ico", "/deps.js", "/about"],
   :cache_control => 'public, must-revalidate, max-age=500',
   :root => "public"
 
