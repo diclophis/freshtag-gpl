@@ -315,6 +315,11 @@ input {
   height: 100%;
 }
 
+#featured-topics ul li{
+  float: left;
+margin-left: 15px;
+}
+
 .connected #featured-topics {
   display: none;
 }
