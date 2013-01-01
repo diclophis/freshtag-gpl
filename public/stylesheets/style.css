@@ -430,7 +430,6 @@ color: white;
 }
 
 .copyright{
-  text-align: center;
 color: white;
 margin-top: 34px;
 background-color: rgba(0, 0, 0, .9);
@@ -446,6 +445,10 @@ padding-top: 10px;
   text-decoration: underline;
 }
 
+.copyright-text{
+  position: relative;
+left: 15px;
+}
 @-moz-document url-prefix() {
   #freshtag-button, #chat-media-button, #chat-button{
     position: relative;
