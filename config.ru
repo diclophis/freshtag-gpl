@@ -125,8 +125,8 @@ class TokboxJavascriptResource < FreshTagResource
   end
   [
     301,
-    text_headers("plain").merge({"Location" => tokbox_javascript_url}),
-    ""
+    text_headers("plain").merge({"Location" => tokbox_javascript_url, "Content-Length" => 0}),
+    StringIO.new("")
   ]
   end
   include NewRelic::Agent::Instrumentation::Rack
