@@ -3,6 +3,7 @@
 var tokboxExceptionHandler = function(event) {
   console.log("Exception: " + event.code + "::" + event.message);
   console.log(event, this);
+  alert(event.message);
 };
 
 var createGravatarUrl = function() {
@@ -260,35 +261,20 @@ var getToken = function(session, gotTokenFunc) {
 };
 
 var loadTokBox = function(token) {
-  var tokbox_loaded = function() {
-    var sessionId = this.foundSession; 
-    if (TB.checkSystemRequirements() != TB.HAS_REQUIREMENTS) {
-      alert("You don't have the minimum requirements to run this application." + "Please upgrade to the latest version of Flash.");
-    } else {
-      TB.addEventListener("exception", tokboxExceptionHandler);
-      this.session = TB.initSession(sessionId);
-      this.session.addEventListener('sessionDisconnected', sessionDisconnectedHandler.bind(this));
-      this.session.addEventListener('sessionConnected', addsAllStreamsFromEventHandler.bind(this));
-      this.session.addEventListener('streamCreated', addsAllStreamsFromEventHandler.bind(this));
-      this.session.addEventListener('streamDestroyed', streamDestroyedHandler.bind(this));
-      //this.session.addEventListener('connectionCreated', connectionCreatedHandler);
-      //this.session.addEventListener('connectionDestroyed', connectionDestroyedHandler);
-      this.session.connect(this.apiKey, token);
-    }
+  var sessionId = this.foundSession; 
+  if (TB.checkSystemRequirements() != TB.HAS_REQUIREMENTS) {
+    alert("You don't have the minimum requirements to run this application." + "Please upgrade to the latest version of Flash.");
+  } else {
+    TB.addEventListener("exception", tokboxExceptionHandler);
+    this.session = TB.initSession(sessionId);
+    this.session.addEventListener('sessionDisconnected', sessionDisconnectedHandler.bind(this));
+    this.session.addEventListener('sessionConnected', addsAllStreamsFromEventHandler.bind(this));
+    this.session.addEventListener('streamCreated', addsAllStreamsFromEventHandler.bind(this));
+    this.session.addEventListener('streamDestroyed', streamDestroyedHandler.bind(this));
+    //this.session.addEventListener('connectionCreated', connectionCreatedHandler);
+    //this.session.addEventListener('connectionDestroyed', connectionDestroyedHandler);
+    this.session.connect(this.apiKey, token);
   }
-
-  var tokbox_script_url = "http://static.opentok.com/v1.1/js/TB.min.js";
-  if (this.webrtc) {
-    tokbox_script_url = "http://static.opentok.com/webrtc/v2.0/js/TB.min.js";
-  }
-
-  var tb = document.createElement('script');
-  tb.onload = tokbox_loaded.bind(this);
-  tb.type = 'text/javascript';
-  tb.src = tokbox_script_url;
-  var head = document.getElementsByTagName('head')[0];
-  head.appendChild(tb);
-
 };
 
 var addsAllStreamsFromEventHandler = function(event) {

@@ -116,6 +116,22 @@ class SessionResource < FreshTagResource
   include NewRelic::Agent::Instrumentation::Rack
 end
 
+class TokboxJavascriptResource < FreshTagResource
+  def call(env)
+  request = Rack::Request.new(env)
+  tokbox_javascript_url = "http://static.opentok.com/v1.1/js/TB.min.js"
+  if request.host.start_with?("rtc.")
+    tokbox_javascript_url = "http://static.opentok.com/webrtc/v2.0/js/TB.min.js"
+  end
+  [
+    301,
+    text_headers("plain").merge({"Location" => tokbox_javascript_url}),
+    ""
+  ]
+  end
+  include NewRelic::Agent::Instrumentation::Rack
+end
+
 builder = Rack::Builder.new do
   map "/" do
     run DefaultResource.new
@@ -127,6 +143,10 @@ builder = Rack::Builder.new do
 
   map "/api/session" do
     run SessionResource.new
+  end
+
+  map "/tokbox-javascript" do
+    run TokboxJavascriptResource.new
   end
 end
 

@@ -33,14 +33,19 @@ a:hover {
   color: #000;
 }
 .streams-container { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
-.streams-container > object { padding: 0; margin: 0; -moz-transition: all 5s; -webkit-transition: all 5s; position: relative; float: left; background-color: rgba(32, 32, 32, 0.2); }
+.streams-container > object, .streams-container > video { padding: 0; margin: 0; -moz-transition: all 5s; -webkit-transition: all 5s; position: relative; float: left; background-color: rgba(32, 32, 32, 0.2); }
 
-#single-stream object { width: 100%; height: 100%; }
-#double-stream object { width: 50%; height: 100%; }
-#quad-stream object { width: 50%; height: 50%; }
-#six-stream object { width: 33.3%; height: 50%; }
-#nine-stream object { width: 33.3%; height: 33%; }
-#twelve-stream object { width: 25%; height: 33%; }
+#single-stream object, #single-stream video { width: 100%; height: 100%; }
+#double-stream object, #double-stream video { width: 50%; height: 100%; }
+#quad-stream object, #quad-stream video { width: 50%; height: 50%; }
+#six-stream object, #six-stream video { width: 33.3%; height: 50%; }
+#nine-stream object, #nine-stream video { width: 33.3%; height: 33%; }
+#twelve-stream object, #twelve-stream video { width: 25%; height: 33%; }
+
+div.OT_subscriber, div.OT_publisher, #publisher {
+  width: 100% !important;
+  height: 100% !important;
+}
 
 #logo {
   font-family: 'proximaNova';
