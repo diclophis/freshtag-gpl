@@ -119,6 +119,8 @@ background: rgba(51, 204, 204, .9);
 margin: 51px auto 0px auto;
 height: 50px;
 width: 940px;
+position: relative;
+z-index: 100;
 }
 
 #publisher object {
@@ -301,6 +303,7 @@ input {
   height: 3.125em;
     -webkit-box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
   box-shadow:  0px 0px 10px 1px rgba(0, 0, 0, 1);
+  z-index: 1000;
 }
 
 #top-bar .grid_12, #top-bar .grid_12 .grid_4 {
@@ -419,6 +422,7 @@ input[type="submit"]:active, input[type="button"]:active{
   color: white;
   position: absolute;
   top: 178px;
+  margin-left: 10px;
 }
 .heading_bar {
 height: 40px;
