@@ -25,6 +25,11 @@ body > object {
   top: 0;
   left: 0;
 }
+
+h3{
+  font-weight: normal !important;
+}
+
 a, a:visited {
   color:white;
   text-decoration: none;

@@ -387,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function () {
     freshtag.freshtagButton.click();
   }
 
-  x = Math.floor((Math.random()*12)+1);
+  x = Math.floor((Math.random()*11)+1);
   document.getElementById("body").style.backgroundImage="url(../images/bg"+x+".jpg)";
 
 });
