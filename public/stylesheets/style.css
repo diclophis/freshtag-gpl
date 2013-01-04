@@ -318,21 +318,9 @@ input {
   height: 100%;
 }
 
-#featured-topics {
-  position: absolute;
-  top: 50%;
-  width: 32%;
-  margin: 0.25em 0 0 0.55em;
-  height: 100%;
-}
-
-#featured-topics ul li{
+#featured_topics ul li{
   float: left;
-margin-left: 15px;
-}
-
-.connected #featured-topics {
-  display: none;
+  margin-left: 15px;
 }
 
 #role {
