@@ -295,7 +295,9 @@ var addsAllStreamsFromEventHandler = function(event) {
 
 var streamDestroyedHandler = function(event) {
   // This signals that a stream was destroyed. Any Subscribers will automatically be removed.
-  // This default behaviour can be prevented using event.preventDefault()
+  if (event.streams[0].connection.connectionId == this.session.connection.connectionId) {
+    return;
+  }
   var length = (this.streamsContainer.children.length) - 1;
   relayoutStreamsForElementCount.apply(this, [length]);
 };
@@ -304,6 +306,8 @@ var sessionDisconnectedHandler = function(event) {
   // This signals that the user was disconnected from the Session. Any subscribers and publishers
   // will automatically be removed. This default behaviour can be prevented using event.preventDefault()
   this.publisher = null;
+  this.disconnectButton.className = "hidden";
+  this.roleButton.className = "";
 };
 
 var addStream = function(stream) {
@@ -341,17 +345,22 @@ var onRoleButtonClick = function(ev) {
     parentDiv.insertBefore(publisherDiv, parentDiv.firstChild);
     this.publisher = this.session.publish(publisherDivDiv.id);
     this.roleButton.className = "hidden";
+    this.disconnectButton.className = "";
     this.roleSpan.className = "guest";
     this.roleSpan.innerHTML = "GUEST";
   }
   return false;
 };
 
-var stopPublishing = function() {
+var onDisconnectButtonClick = function(ev) {
+  ev.preventDefault();
   if (this.publisher) {
     this.session.unpublish(this.publisher);
   }
   this.publisher = null;
+  this.disconnectButton.className = "hidden";
+  this.roleButton.className = "";
+  return false;
 };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -367,6 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
     sessionDataRef: null,
     myselfContainer: document.getElementById("myself"),
     roleButton: document.getElementById("role-button"),
+    disconnectButton: document.getElementById("disconnect-button"),
     roleSpan: document.getElementById("role-span"),
     freshtagForm: document.getElementById("freshtag-form"),
     freshtagButton: document.getElementById("freshtag-button"),
@@ -383,6 +393,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   freshtag.freshtagForm.onsubmit = onFreshtagFormSubmit.bind(freshtag);
   freshtag.roleButton.onclick = onRoleButtonClick.bind(freshtag);
+  freshtag.disconnectButton.onclick = onDisconnectButtonClick.bind(freshtag);
   freshtag.chatForm.onsubmit = onChatFormSubmit.bind(freshtag);
   freshtag.chatMediaButton.onclick = onChatMediaButtonClick.bind(freshtag);
   freshtag.freshtagInput.focus();

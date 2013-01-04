@@ -68,10 +68,8 @@ left: -3px;
 
 .inset { text-shadow: 0 1px 0 #fff; }
 
-#role-button, .share_buttons{
+#role-button, #disconnect-button, .share_buttons{
   display: block;
-  position: relative;
-  top: 268px;
   width: 100%;
 }
 
@@ -382,7 +380,7 @@ left: 32px;
 top: 17px;
 }
 
-#role-button.hidden {
+#role-button.hidden, #disconnect-button.hidden {
   display: none;
 }
 
