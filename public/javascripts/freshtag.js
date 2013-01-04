@@ -246,6 +246,15 @@ var relayoutStreamsForElementCount = function(length) {
     throw ("max video streams: " + length);
   }
 
+  var max = 9;
+  if (length >= max) {
+    this.roleButton.className = "hidden";
+  } else {
+    if (this.publisher === null) {
+      this.roleButton.className = "";
+    }
+  }
+
   updateRoomCount.apply(this, [length]);
 };
 
