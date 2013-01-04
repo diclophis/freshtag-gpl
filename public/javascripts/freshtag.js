@@ -410,5 +410,7 @@ document.addEventListener("DOMContentLoaded", function () {
   x = Math.floor((Math.random()*11)+1);
   document.getElementById("body").style.backgroundImage="url(../images/bg"+x+".jpg)";
 
+  Socialite.load(document.getElementById("socialite"));
+
 });
 //};
