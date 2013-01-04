@@ -65,7 +65,7 @@ use Rack::ShowExceptions
 use Rack::Deflater
 
 use Rack::Static,
-  :urls => ["/javascripts", "/images", "/stylesheets", "/favicon.ico", "/deps.js", "/about"],
+  :urls => ["/javascripts", "/images", "/stylesheets", "/favicon.ico", "/deps.js"],
   :cache_control => 'public, must-revalidate, max-age=500',
   :root => "public"
 
@@ -77,18 +77,25 @@ class FreshTagResource
   def text_headers(type)
   {
     "Content-Type" => "text/" + type,
-    "Cache-Control" => "public, must-revalidate, max-age=0"
+    "Cache-Control" => "public, must-revalidate, max-age=0",
+    "Connection" => "close"
   }
   end
 end
 
 class DefaultResource < FreshTagResource
   PUBLIC_INDEX = Array(File.open("public/index.html").readlines.join("\n"))
+  PUBLIC_ABOUT = Array(File.open("public/about.html").readlines.join("\n"))
   def call(env)
+  request = Rack::Request.new(env)
   [
     200,
     text_headers("html"),
-    PUBLIC_INDEX
+    if request.host.start_with?("about.")
+      PUBLIC_ABOUT
+    else
+      PUBLIC_INDEX
+    end
   ]
   end
   include NewRelic::Agent::Instrumentation::Rack
