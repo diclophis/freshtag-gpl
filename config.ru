@@ -10,8 +10,8 @@ Rack::Mime::MIME_TYPES[""] = "text/html" #default missing exentions to text/html
 $build = "1.2"
 
 class TokBoxMiddleware
-  @@api_key = "20179871"
-  @@api_secret = "120b9dcb30d979f5dde64625e053186524f4aefa"
+  @@api_key = "#load-from-config"
+  @@api_secret = "#load-from-config"
   @@api_url = "https://api.opentok.com/hl"
 
   def self.session(env)
